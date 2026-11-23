@@ -1,0 +1,7 @@
+{
+  "symbol": "ETF000",
+  "max_abs_diff_vs_reference": 0.0,
+  "max_rel_diff_vs_reference": 0.0,
+  "max_abs_diff_vs_naive_first_close": 6637.438386697788,
+  "n_sessions": 4435
+}

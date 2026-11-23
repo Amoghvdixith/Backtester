@@ -1,0 +1,108 @@
+{
+  "label": "sma_crossover",
+  "data_mode": "market",
+  "strategy": {
+    "strategy": "sma_crossover",
+    "fast": 50,
+    "slow": 200,
+    "allow_short": false
+  },
+  "sizer": {
+    "type": "EqualWeight",
+    "target_gross": 1.0
+  },
+  "constraints": {
+    "max_gross": 1.0,
+    "max_net": 1.0,
+    "max_position": 0.5,
+    "allow_short": false
+  },
+  "costs": {
+    "commission": {
+      "fixed": 0.0,
+      "per_share": 0.0,
+      "rate_bps": 1.0,
+      "minimum": 1.0,
+      "maximum": null
+    },
+    "spread_bps_full": 2.0,
+    "slippage_bps": 1.0,
+    "slippage_stochastic_sd_bps": 0.0,
+    "slippage_seed": 7,
+    "impact_coefficient": 0.5,
+    "impact_fallback_bps": 5.0
+  },
+  "execution": {
+    "expires_after": 5,
+    "insufficient_cash": "resize",
+    "max_participation": null,
+    "adv_window": 20,
+    "vol_window": 20
+  },
+  "financing": {
+    "credit_rate": 0.0,
+    "debit_rate": 0.04,
+    "borrow_fee": 0.005,
+    "day_count_basis": 365,
+    "short_proceeds_earn_interest": false
+  },
+  "config": {
+    "initial_cash": 1000000,
+    "fractional": false,
+    "rebalance_band": 0.02,
+    "cash_buffer": 0.005,
+    "trade_start": null,
+    "liquidate_on_final_open": false,
+    "universe_exit": "liquidate",
+    "check_accounting": true,
+    "execution_delay": 1
+  },
+  "execution_convention": "signal at close t, fill at next tradable open (t+1)",
+  "data_start": "2005-01-03",
+  "data_end": "2021-12-31",
+  "trade_start": "2005-01-03",
+  "n_symbols": 10,
+  "provenance": {
+    "source_file": "us_sector_etfs.csv",
+    "data_mode": "market",
+    "provider": "Yahoo Finance via yfinance",
+    "yfinance_version": "1.8.0",
+    "symbols": [
+      "SPY",
+      "XLB",
+      "XLE",
+      "XLF",
+      "XLI",
+      "XLK",
+      "XLP",
+      "XLU",
+      "XLV",
+      "XLY"
+    ],
+    "requested_period": [
+      "2005-01-01",
+      "2025-01-01"
+    ],
+    "retrieved_utc": "2026-11-22T17:27:26+00:00",
+    "currency": "USD",
+    "adjustment_convention": "auto_adjust=True (split+dividend adjusted OHLC); research approximation, not raw tradable prices",
+    "missing_data_policy": "no forward fill; incomplete rows dropped (missing bars)",
+    "ohlc_repair_tolerance": 0.005,
+    "cleaning_report": {
+      "repaired_rows": 90,
+      "dropped_rows": 0,
+      "missing_rows": 0
+    },
+    "universe_note": "current ETF tickers chosen today: NOT a point-in-time universe; survivorship/selection bias is not addressed",
+    "usage_note": "for personal research; check provider terms before redistribution",
+    "n_rows": 50330,
+    "slice": [
+      "None",
+      "2021-12-31 00:00:00"
+    ],
+    "holdout_start_excluded": "2022-01-01"
+  },
+  "impact_fallbacks": 0,
+  "insolvent": false,
+  "runtime_seconds": 0.633
+}

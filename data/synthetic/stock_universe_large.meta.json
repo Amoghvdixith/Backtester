@@ -1,0 +1,37 @@
+{
+  "data_mode": "synthetic",
+  "label": "SYNTHETIC DATA - NOT MARKET DATA",
+  "generator": "backtester.synthetic.generate",
+  "spec": {
+    "n_assets": 150,
+    "start": "2005-01-01",
+    "end": "2024-12-31",
+    "seed": 303,
+    "prefix": "STK",
+    "late_listing_frac": 0.15,
+    "delist_frac": 0.1,
+    "crash_delist_frac": 0.5,
+    "halt_prob": 0.0005,
+    "alpha_ann_sd": 0.06,
+    "alpha_halflife_days": 252.0
+  },
+  "regimes": {
+    "calm": {
+      "annual_drift": 0.09,
+      "annual_vol": 0.12
+    },
+    "stressed": {
+      "annual_drift": -0.2,
+      "annual_vol": 0.3
+    },
+    "sideways": {
+      "annual_drift": 0.0,
+      "annual_vol": 0.16
+    }
+  },
+  "calendar": "pandas business days (Mon-Fri), no holidays",
+  "timezone": "tz-naive session dates",
+  "adjustment_convention": "no corporate actions are simulated; prices are total-return-like",
+  "currency": "synthetic units",
+  "n_rows": 724361
+}

@@ -1,0 +1,19 @@
+# Pure cost-sensitivity experiment.
+#
+# Each scenario REPLACES the detailed execution-cost model (commission, spread,
+# slippage, impact) with a single flat one-way proportional cost charged as an
+# explicit fee on traded notional.  Nothing is added on top of the detailed model,
+# so there is no double counting.  Financing (cash interest, borrow fees) is kept.
+# Strategy parameters and evaluation dates are held fixed across scenarios; the
+# strategy is NOT re-tuned per cost level.
+one_way_bps: [0, 5, 10, 20, 50]
+mode: replace_detailed_model
+
+robustness:
+  leverage_caps: [0.5, 1.0, 1.5]          # max_gross with fixed-fraction sizing
+  execution_delay_sessions: [1, 2, 3]     # 1 = next open (default)
+  sizers:
+    - {type: equal_weight, target_gross: 1.0}
+    - {type: vol_target, target_vol: 0.10, lookback: 60, max_leverage_per_asset: 1.0}
+    - {type: kelly, lookback: 252, kelly_fraction: 0.5, shrinkage: 0.5, cap: 0.5}
+  train_years: [2, 3, 4]

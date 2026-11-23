@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "backtester"
+version = "0.1.0"
+description = "Educational event-driven backtesting framework with explicit execution timing, cost models, walk-forward selection and multiple-testing diagnostics."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.1",
+    "scipy>=1.11",
+    "matplotlib>=3.8",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+market = ["yfinance>=0.2.40"]
+dev = [
+    "pytest>=8",
+    "pytest-cov>=5",
+    "ruff>=0.5",
+    "mypy>=1.10",
+    "pandas-stubs",
+    "types-PyYAML",
+    "nbformat>=5.9",
+    "nbclient>=0.10",
+    "ipykernel>=6.29",
+]
+
+[project.scripts]
+backtester = "backtester.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "slow: longer integration experiments (deselect with -m 'not slow')",
+]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "NPY"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+warn_unused_ignores = false
+check_untyped_defs = true
+files = ["src/backtester"]
+
+[tool.coverage.run]
+source = ["backtester"]
+omit = ["*/cli.py"]

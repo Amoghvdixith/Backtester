@@ -1,0 +1,2042 @@
+{
+  "generated_utc": "2026-11-22T17:31:08+00:00",
+  "mode": "fast",
+  "environment": {
+    "python": "3.14.4",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "numpy": "2.5.5",
+    "pandas": "3.1.1",
+    "scipy": "1.18.1",
+    "matplotlib": "3.11.2",
+    "yaml": "6.0.4",
+    "backtester": "0.1.0"
+  },
+  "holdout_start": "2022-01-01",
+  "holdout_evaluations_logged": {
+    "data/synthetic/etf_like.csv": 0,
+    "data/synthetic/stock_universe.csv": 0,
+    "data/synthetic/stock_universe_large.csv": 0
+  },
+  "datasets": {
+    "etf_like": {
+      "n_assets": 6,
+      "start": "2005-01-01",
+      "end": "2024-12-31",
+      "seed": 101,
+      "prefix": "ETF",
+      "late_listing_frac": 0.0,
+      "delist_frac": 0.0,
+      "crash_delist_frac": 0.5,
+      "halt_prob": 0.0002,
+      "alpha_ann_sd": 0.06,
+      "alpha_halflife_days": 252.0
+    },
+    "stock_universe": {
+      "n_assets": 40,
+      "start": "2005-01-01",
+      "end": "2024-12-31",
+      "seed": 202,
+      "prefix": "STK",
+      "late_listing_frac": 0.15,
+      "delist_frac": 0.1,
+      "crash_delist_frac": 0.5,
+      "halt_prob": 0.0005,
+      "alpha_ann_sd": 0.06,
+      "alpha_halflife_days": 252.0
+    },
+    "sma_market": {
+      "data_mode": "market",
+      "provider": "Yahoo Finance via yfinance",
+      "yfinance_version": "1.8.0",
+      "symbols": [
+        "SPY",
+        "XLB",
+        "XLE",
+        "XLF",
+        "XLI",
+        "XLK",
+        "XLP",
+        "XLU",
+        "XLV",
+        "XLY"
+      ],
+      "requested_period": [
+        "2005-01-01",
+        "2025-01-01"
+      ],
+      "retrieved_utc": "2026-11-22T17:27:26+00:00",
+      "currency": "USD",
+      "adjustment_convention": "auto_adjust=True (split+dividend adjusted OHLC); research approximation, not raw tradable prices",
+      "missing_data_policy": "no forward fill; incomplete rows dropped (missing bars)",
+      "ohlc_repair_tolerance": 0.005,
+      "cleaning_report": {
+        "repaired_rows": 90,
+        "dropped_rows": 0,
+        "missing_rows": 0
+      },
+      "universe_note": "current ETF tickers chosen today: NOT a point-in-time universe; survivorship/selection bias is not addressed",
+      "usage_note": "for personal research; check provider terms before redistribution",
+      "n_rows": 50330
+    }
+  },
+  "configs": {
+    "sma": {
+      "experiment": "sma_crossover",
+      "seed": 7,
+      "data": {
+        "mode": "synthetic",
+        "path": "data/synthetic/etf_like.csv"
+      },
+      "strategy": {
+        "name": "sma_crossover",
+        "params": {
+          "fast": 50,
+          "slow": 200,
+          "allow_short": false
+        }
+      },
+      "sizing": {
+        "type": "equal_weight",
+        "target_gross": 1.0
+      },
+      "constraints": {
+        "max_gross": 1.0,
+        "max_net": 1.0,
+        "max_position": 0.5,
+        "allow_short": false
+      },
+      "costs": {
+        "commission": {
+          "rate_bps": 1.0,
+          "minimum": 1.0
+        },
+        "spread": {
+          "spread_bps": 4.0
+        },
+        "slippage": {
+          "bps": 1.0
+        },
+        "impact": {
+          "coefficient": 0.5,
+          "fallback_bps": 5.0
+        }
+      },
+      "execution": {
+        "expires_after": 5,
+        "insufficient_cash": "resize",
+        "adv_window": 20,
+        "vol_window": 20
+      },
+      "financing": {
+        "credit_rate": 0.02,
+        "debit_rate": 0.04,
+        "borrow_fee": 0.005,
+        "day_count_basis": 365
+      },
+      "backtest": {
+        "initial_cash": 1000000,
+        "fractional": false,
+        "rebalance_band": 0.02,
+        "cash_buffer": 0.005,
+        "universe_exit": "liquidate",
+        "liquidate_on_final_open": false
+      },
+      "benchmark": {
+        "name": "equal_weight_universe",
+        "params": {
+          "min_history": 1,
+          "rebalance": "monthly"
+        }
+      },
+      "risk_free_annual": 0.02
+    },
+    "momentum": {
+      "experiment": "momentum_12_1",
+      "seed": 11,
+      "data": {
+        "mode": "synthetic",
+        "path": "data/synthetic/stock_universe.csv",
+        "membership": "data/synthetic/stock_universe_membership.csv"
+      },
+      "strategy": {
+        "name": "momentum_12_1",
+        "params": {
+          "lookback": 252,
+          "skip": 21,
+          "quantile": 0.1,
+          "mode": "long_only",
+          "min_names": 1,
+          "min_universe": 10,
+          "max_stale": 5,
+          "min_obs_frac": 0.9
+        }
+      },
+      "sizing": {
+        "type": "equal_weight",
+        "target_gross": 1.0
+      },
+      "constraints": {
+        "max_gross": 1.0,
+        "max_net": 1.0,
+        "max_position": 0.25,
+        "allow_short": false
+      },
+      "costs": {
+        "commission": {
+          "rate_bps": 1.0,
+          "minimum": 1.0
+        },
+        "spread": {
+          "spread_bps": 8.0
+        },
+        "slippage": {
+          "bps": 2.0
+        },
+        "impact": {
+          "coefficient": 0.5,
+          "fallback_bps": 10.0
+        }
+      },
+      "execution": {
+        "expires_after": 5,
+        "insufficient_cash": "resize",
+        "adv_window": 20,
+        "vol_window": 20
+      },
+      "financing": {
+        "credit_rate": 0.02,
+        "debit_rate": 0.04,
+        "borrow_fee": 0.005,
+        "day_count_basis": 365
+      },
+      "backtest": {
+        "initial_cash": 1000000,
+        "fractional": false,
+        "rebalance_band": 0.0,
+        "cash_buffer": 0.01,
+        "universe_exit": "liquidate"
+      },
+      "benchmark": {
+        "name": "equal_weight_universe",
+        "params": {
+          "min_history": 253,
+          "rebalance": "monthly"
+        }
+      },
+      "risk_free_annual": 0.02
+    },
+    "walkforward": {
+      "holdout_start": "2022-01-01",
+      "train_years": 3,
+      "test_years": 1,
+      "step_years": 1,
+      "objective": "sharpe",
+      "min_train_obs": 126,
+      "grids": {
+        "sma_crossover": {
+          "fast": [
+            10,
+            20,
+            50,
+            100
+          ],
+          "slow": [
+            50,
+            100,
+            150,
+            200
+          ]
+        },
+        "momentum_12_1": {
+          "lookback": [
+            126,
+            252
+          ],
+          "skip": [
+            0,
+            21
+          ],
+          "quantile": [
+            0.1,
+            0.2
+          ]
+        }
+      },
+      "research_mode": {
+        "grids": {
+          "sma_crossover": {
+            "fast": [
+              5,
+              10,
+              20,
+              30,
+              50,
+              75,
+              100
+            ],
+            "slow": [
+              50,
+              75,
+              100,
+              150,
+              200,
+              250
+            ]
+          },
+          "momentum_12_1": {
+            "lookback": [
+              126,
+              189,
+              252
+            ],
+            "skip": [
+              0,
+              10,
+              21
+            ],
+            "quantile": [
+              0.1,
+              0.2,
+              0.3
+            ]
+          }
+        }
+      }
+    },
+    "cost_scenarios": {
+      "one_way_bps": [
+        0,
+        5,
+        10,
+        20,
+        50
+      ],
+      "mode": "replace_detailed_model",
+      "robustness": {
+        "leverage_caps": [
+          0.5,
+          1.0,
+          1.5
+        ],
+        "execution_delay_sessions": [
+          1,
+          2,
+          3
+        ],
+        "sizers": [
+          {
+            "type": "equal_weight",
+            "target_gross": 1.0
+          },
+          {
+            "type": "vol_target",
+            "target_vol": 0.1,
+            "lookback": 60,
+            "max_leverage_per_asset": 1.0
+          },
+          {
+            "type": "kelly",
+            "lookback": 252,
+            "kelly_fraction": 0.5,
+            "shrinkage": 0.5,
+            "cap": 0.5
+          }
+        ],
+        "train_years": [
+          2,
+          3,
+          4
+        ]
+      }
+    }
+  },
+  "experiments": {
+    "buy_and_hold_validation": {
+      "symbol": "ETF000",
+      "max_abs_diff_vs_reference": 0.0,
+      "max_rel_diff_vs_reference": 0.0,
+      "max_abs_diff_vs_naive_first_close": 6637.438386697788,
+      "n_sessions": 4435,
+      "step_runtime_seconds": 0.65
+    },
+    "sma_demo": {
+      "metrics": {
+        "n_periods": 4434,
+        "start": "2005-01-04",
+        "end": "2021-12-31",
+        "total_return": 0.7470062064169849,
+        "cagr": 0.032215688976229284,
+        "mean_daily_arith": 0.00020849944796551292,
+        "mean_ann_arith": 0.05254186088730926,
+        "ann_vol": 0.20411741714122514,
+        "sharpe": 0.16272021791185037,
+        "sharpe_per_period": 0.010250410235166523,
+        "sortino": 0.23061726257525664,
+        "max_drawdown": 0.5461644768745392,
+        "calmar": 0.05898532464173724,
+        "longest_dd_sessions": 2461,
+        "longest_dd_days": 3445,
+        "skew": -0.01742103987204803,
+        "kurtosis_excess": 1.1026587101995027,
+        "kurtosis_pearson": 4.102658710199503,
+        "best_day": 0.06450736374855515,
+        "worst_day": -0.05795510189584607,
+        "benchmark_corr": 0.8017592244756101,
+        "beta": 0.8315887426414043,
+        "benchmark_cagr": 0.03502966140332031,
+        "benchmark_sharpe": 0.17515176530354473,
+        "time_invested": 0.9106901217861976,
+        "avg_gross_exposure": 0.8311858422724693,
+        "avg_net_exposure": 0.8311858422724693,
+        "turnover_annual": 2.2857106409226255,
+        "commissions": 9709.42540289221,
+        "spread_costs": 19418.537738417996,
+        "slippage_costs": 9709.268869208998,
+        "impact_costs": 43347.564280377184,
+        "interest": 63339.67716385916,
+        "borrow_fees": 0.0,
+        "total_trading_costs": 82184.7962908964,
+        "net_financing": 63339.67716385916,
+        "max_stale_marks": 1,
+        "n_round_trips": 443,
+        "hit_rate": 0.5304740406320542,
+        "avg_win": 16207.23867849016,
+        "avg_loss": -15398.465869602367,
+        "win_loss_ratio": 1.0525229471388033,
+        "profit_factor": 1.1891485220077826,
+        "avg_holding_days": 152.0406320541761
+      },
+      "benchmark_metrics": {
+        "n_periods": 4434,
+        "start": "2005-01-04",
+        "end": "2021-12-31",
+        "total_return": 0.8327279452596013,
+        "cagr": 0.03502966140332031,
+        "mean_daily_arith": 0.0002134871310883961,
+        "mean_ann_arith": 0.05379875703427582,
+        "ann_vol": 0.19679561985086105,
+        "sharpe": 0.17515176530354473,
+        "sharpe_per_period": 0.011033524111598355,
+        "sortino": 0.24902055942371645,
+        "max_drawdown": 0.5147277793233231,
+        "calmar": 0.0680547326382333,
+        "longest_dd_sessions": 2423,
+        "longest_dd_days": 3393,
+        "skew": -0.0328036582737891,
+        "kurtosis_excess": 1.0555382853067723,
+        "kurtosis_pearson": 4.055538285306772,
+        "best_day": 0.055484871087537746,
+        "worst_day": -0.08127310306485147,
+        "time_invested": 1.0,
+        "avg_gross_exposure": 0.983720885435636,
+        "avg_net_exposure": 0.983720885435636,
+        "turnover_annual": 0.19329258156065332,
+        "commissions": 1080.9107562149281,
+        "spread_costs": 2153.972579505599,
+        "slippage_costs": 1076.9862897527994,
+        "impact_costs": 2260.9590530657742,
+        "interest": 8614.404142155216,
+        "borrow_fees": 0.0,
+        "total_trading_costs": 6572.8286785391,
+        "net_financing": 8614.404142155216,
+        "max_stale_marks": 1,
+        "n_round_trips": 186,
+        "hit_rate": 0.7043010752688172,
+        "avg_win": 14325.446477346208,
+        "avg_loss": -9712.534552224723,
+        "win_loss_ratio": 1.4749441971421215,
+        "profit_factor": 3.5130489059203254,
+        "avg_holding_days": 1879.3655913978494
+      },
+      "warnings": [],
+      "sharpe_uncertainty": {
+        "sharpe_annualised": 0.16272021791185037,
+        "n_obs": 4434,
+        "se_iid_normal_annualised": 0.2384041623801956,
+        "se_iid_nonnormal_annualised": 0.238428804880756,
+        "se_block_bootstrap_annualised": 0.23136574556517062,
+        "bootstrap_ci_low": -0.3056370732071012,
+        "bootstrap_ci_high": 0.6297228745026663,
+        "bootstrap_block": 20
+      },
+      "order_status_counts": {
+        "submitted": 524,
+        "filled": 508,
+        "resized": 16
+      },
+      "runtime_seconds": 4.18,
+      "scored_range": "2005-01-04 to 2021-12-31",
+      "data_mode": "synthetic",
+      "sample": "development sample before hold-out; fixed a-priori parameters (not OOS)",
+      "step_runtime_seconds": 4.25
+    },
+    "momentum_demo": {
+      "metrics": {
+        "n_periods": 4182,
+        "start": "2005-12-22",
+        "end": "2021-12-31",
+        "total_return": 1.349749994838068,
+        "cagr": 0.052827246423880814,
+        "mean_daily_arith": 0.00029814645622624374,
+        "mean_ann_arith": 0.07513290696901342,
+        "ann_vol": 0.2175488907099888,
+        "sharpe": 0.256505165477474,
+        "sharpe_per_period": 0.01615830661563968,
+        "sortino": 0.36959524947665073,
+        "max_drawdown": 0.47323913138075424,
+        "calmar": 0.11162907486062806,
+        "longest_dd_sessions": 1012,
+        "longest_dd_days": 1418,
+        "skew": 0.0407735450547463,
+        "kurtosis_excess": 0.31430877584669403,
+        "kurtosis_pearson": 3.314308775846694,
+        "best_day": 0.05690341575207625,
+        "worst_day": -0.06414204196566986,
+        "benchmark_corr": 0.7327128941246605,
+        "beta": 1.097193758974471,
+        "benchmark_cagr": -0.0015053185926562351,
+        "benchmark_sharpe": -0.07079138368548869,
+        "time_invested": 0.9983261597321855,
+        "avg_gross_exposure": 0.9885477366980586,
+        "avg_net_exposure": 0.9885477366980586,
+        "turnover_annual": 4.131070600101658,
+        "commissions": 18298.98583288432,
+        "spread_costs": 72916.3436546,
+        "slippage_costs": 36458.1718273,
+        "impact_costs": 78392.83977643878,
+        "interest": 4888.442824517093,
+        "borrow_fees": 0.0,
+        "total_trading_costs": 206066.34109122312,
+        "net_financing": 4888.442824517093,
+        "max_stale_marks": 1,
+        "n_round_trips": 757,
+        "hit_rate": 0.6036988110964333,
+        "avg_win": 12066.295681391372,
+        "avg_loss": -15424.27583204201,
+        "win_loss_ratio": 0.782292524639967,
+        "profit_factor": 1.1916922792015496,
+        "avg_holding_days": 102.70805812417437
+      },
+      "benchmark_metrics": {
+        "n_periods": 4182,
+        "start": "2005-12-22",
+        "end": "2021-12-31",
+        "total_return": -0.024690031030274118,
+        "cagr": -0.0015053185926562351,
+        "mean_daily_arith": 3.5884538393739846e-05,
+        "mean_ann_arith": 0.009042903675222442,
+        "ann_vol": 0.14528051770428846,
+        "sharpe": -0.07079138368548869,
+        "sharpe_per_period": -0.00445943800471329,
+        "sortino": -0.100553407756123,
+        "max_drawdown": 0.3235804313155589,
+        "calmar": -0.0046520693063426734,
+        "longest_dd_sessions": 1279,
+        "longest_dd_days": 1791,
+        "skew": 0.04228075419364363,
+        "kurtosis_excess": 1.4782806154841959,
+        "kurtosis_pearson": 4.478280615484196,
+        "best_day": 0.04767018952762969,
+        "worst_day": -0.05869832183630663,
+        "time_invested": 1.0,
+        "avg_gross_exposure": 0.9425315949318623,
+        "avg_net_exposure": 0.9425315949318623,
+        "turnover_annual": 1.3556393927553445,
+        "commissions": 68096.53798763202,
+        "spread_costs": 20135.91061378858,
+        "slippage_costs": 10067.95530689429,
+        "impact_costs": 2183.644230603261,
+        "interest": 20898.178600269697,
+        "borrow_fees": 0.0,
+        "total_trading_costs": 100484.04813891815,
+        "net_financing": 20898.178600269697,
+        "max_stale_marks": 3,
+        "n_round_trips": 66313,
+        "hit_rate": 0.47492950100281994,
+        "avg_win": 66.45986527487972,
+        "avg_loss": -61.089517287719566,
+        "win_loss_ratio": 1.0879094847298738,
+        "profit_factor": 0.9840208309280177,
+        "avg_holding_days": 187.49174370033026
+      },
+      "warnings": [],
+      "sharpe_uncertainty": {
+        "sharpe_annualised": 0.256505165477474,
+        "n_obs": 4182,
+        "se_iid_normal_annualised": 0.24549158046827718,
+        "se_iid_nonnormal_annualised": 0.24541396606003874,
+        "se_block_bootstrap_annualised": 0.2421756936602465,
+        "bootstrap_ci_low": -0.2160565038258096,
+        "bootstrap_ci_high": 0.7149111990841691,
+        "bootstrap_block": 20
+      },
+      "order_status_counts": {
+        "submitted": 1025,
+        "filled": 1025
+      },
+      "runtime_seconds": 11.45,
+      "scored_range": "2005-12-22 to 2021-12-31",
+      "data_mode": "synthetic",
+      "sample": "development sample before hold-out; fixed a-priori parameters (not OOS)",
+      "step_runtime_seconds": 11.67
+    },
+    "sma_walkforward": {
+      "meta": {
+        "experiment": "sma_wf",
+        "grid": {
+          "fast": [
+            10,
+            20,
+            50,
+            100
+          ],
+          "slow": [
+            50,
+            100,
+            150,
+            200
+          ]
+        },
+        "train_years": 3,
+        "test_years": 1,
+        "step_years": 1,
+        "objective": "sharpe",
+        "holdout_start": "2022-01-01 00:00:00",
+        "research_data_end": "2021-12-31",
+        "n_trials_total": 224,
+        "n_trials_invalid": 42,
+        "runtime_seconds": 24.22
+      },
+      "n_folds": 14,
+      "oos_metrics": {
+        "n_periods": 3652,
+        "start": "2008-01-03",
+        "end": "2021-12-31",
+        "total_return": -0.26830018798345,
+        "cagr": -0.02132492609947101,
+        "mean_daily_arith": -7.329296914131347e-06,
+        "mean_ann_arith": -0.0018469828223610994,
+        "ann_vol": 0.1985697487104267,
+        "sharpe": -0.10663556994586587,
+        "sharpe_per_period": -0.006717409499771297,
+        "sortino": -0.15039475458475532,
+        "max_drawdown": 0.5864881120465582,
+        "calmar": -0.036360372293067274,
+        "longest_dd_sessions": 1652,
+        "longest_dd_days": 2312,
+        "skew": 0.04855957453366357,
+        "kurtosis_excess": 1.3654311050436911,
+        "kurtosis_pearson": 4.365431105043691,
+        "best_day": 0.05762627922670793,
+        "worst_day": -0.057939379451025785,
+        "benchmark_corr": 0.8011638258280207,
+        "beta": 0.803073893801555,
+        "benchmark_cagr": 0.020715807828916466,
+        "benchmark_sharpe": 0.10497550168948075,
+        "time_invested": 0.8937568455640745,
+        "avg_gross_exposure": 0.8224641083497904,
+        "avg_net_exposure": 0.8224641083497904,
+        "turnover_annual": 4.537374196993247,
+        "commissions": 14951.79022851634,
+        "spread_costs": 29903.416981654573,
+        "slippage_costs": 14951.708490827286,
+        "impact_costs": 61893.85998621123,
+        "interest": 49237.578150325986,
+        "borrow_fees": 0.0,
+        "total_trading_costs": 121700.77568720943,
+        "net_financing": 49237.578150325986,
+        "max_stale_marks": 1,
+        "n_round_trips": 721,
+        "hit_rate": 0.5492371705963939,
+        "avg_win": 8747.374290178665,
+        "avg_loss": -11761.276830278533,
+        "win_loss_ratio": 0.7437435931836244,
+        "profit_factor": 0.9062229627714314,
+        "avg_holding_days": 78.39528432732317
+      },
+      "benchmark_metrics": {
+        "n_periods": 3652,
+        "start": "2008-01-03",
+        "end": "2021-12-31",
+        "total_return": 0.3460138152541006,
+        "cagr": 0.020715807828916466,
+        "mean_daily_arith": 0.0001592289243569804,
+        "mean_ann_arith": 0.04012568893795906,
+        "ann_vol": 0.19809746126533356,
+        "sharpe": 0.10497550168948075,
+        "sharpe_per_period": 0.006612835029157305,
+        "sortino": 0.1493620036095114,
+        "max_drawdown": 0.49682333682836344,
+        "calmar": 0.04169652730317118,
+        "longest_dd_sessions": 1864,
+        "longest_dd_days": 2610,
+        "skew": -0.013355621190730835,
+        "kurtosis_excess": 1.2220245400883059,
+        "kurtosis_pearson": 4.222024540088306,
+        "best_day": 0.0552148818235314,
+        "worst_day": -0.0810107715437346,
+        "n_round_trips": 0,
+        "hit_rate": null,
+        "avg_win": null,
+        "avg_loss": null,
+        "win_loss_ratio": null,
+        "profit_factor": null,
+        "avg_holding_days": null
+      },
+      "sharpe_uncertainty": {
+        "sharpe_annualised": -0.10663556994586587,
+        "n_obs": 3652,
+        "se_iid_normal_annualised": 0.2626877285081267,
+        "se_iid_nonnormal_annualised": 0.2627324402862113,
+        "se_block_bootstrap_annualised": 0.2652028456442727,
+        "bootstrap_ci_low": -0.6368050592050214,
+        "bootstrap_ci_high": 0.4090244953688052,
+        "bootstrap_block": 20
+      },
+      "dsr": [
+        {
+          "scope": "fold 0 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 16.0,
+          "avg_trial_corr": 0.7998755054625195,
+          "sr_annualised": 0.14573588258343856,
+          "sr0_annualised": 0.2758313741714433,
+          "dsr": 0.40947105856074767,
+          "psr_vs_zero": 0.6011888210226719,
+          "n_obs": 782,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 0 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 3.401493934449766,
+          "avg_trial_corr": 0.7998755054625195,
+          "sr_annualised": 0.14573588258343856,
+          "sr0_annualised": 0.14442710060447797,
+          "dsr": 0.5009186954730975,
+          "psr_vs_zero": 0.6011888210226719,
+          "n_obs": 782,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 1 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 16.0,
+          "avg_trial_corr": 0.8383878150307444,
+          "sr_annualised": -0.10116048272062471,
+          "sr0_annualised": 0.28147347810131756,
+          "dsr": 0.24999769772346048,
+          "psr_vs_zero": 0.42923465246948883,
+          "n_obs": 784,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 1 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 2.9393462196310667,
+          "avg_trial_corr": 0.8383878150307444,
+          "sr_annualised": -0.10116048272062471,
+          "sr0_annualised": 0.13096136815439638,
+          "dsr": 0.34120443075493145,
+          "psr_vs_zero": 0.42923465246948883,
+          "n_obs": 784,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 2 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 16.0,
+          "avg_trial_corr": 0.8037230526056128,
+          "sr_annualised": 0.13395869449034356,
+          "sr0_annualised": 0.5689336772345168,
+          "dsr": 0.22162237925439665,
+          "psr_vs_zero": 0.5933331211149439,
+          "n_obs": 783,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 2 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 3.355323368732646,
+          "avg_trial_corr": 0.8037230526056128,
+          "sr_annualised": 0.13395869449034356,
+          "sr0_annualised": 0.2948793421275931,
+          "dsr": 0.3883381582078066,
+          "psr_vs_zero": 0.5933331211149439,
+          "n_obs": 783,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 3 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 16.0,
+          "avg_trial_corr": 0.8118691215193988,
+          "sr_annualised": 0.37795776192044966,
+          "sr0_annualised": 0.4715978065523549,
+          "dsr": 0.4344565099860342,
+          "psr_vs_zero": 0.7473409620894997,
+          "n_obs": 782,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 3 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 3.257570541767214,
+          "avg_trial_corr": 0.8118691215193988,
+          "sr_annualised": 0.37795776192044966,
+          "sr0_annualised": 0.23896841938407334,
+          "dsr": 0.596758959451266,
+          "psr_vs_zero": 0.7473409620894997,
+          "n_obs": 782,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 4 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 16.0,
+          "avg_trial_corr": 0.757703290253381,
+          "sr_annualised": -0.1136016187953732,
+          "sr0_annualised": 0.4650760616393816,
+          "dsr": 0.1543746614280711,
+          "psr_vs_zero": 0.42081202074444624,
+          "n_obs": 781,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 4 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 3.907560516959428,
+          "avg_trial_corr": 0.757703290253381,
+          "sr_annualised": -0.1136016187953732,
+          "sr0_annualised": 0.26780546414214146,
+          "dsr": 0.2511529724344702,
+          "psr_vs_zero": 0.42081202074444624,
+          "n_obs": 781,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 5 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 16.0,
+          "avg_trial_corr": 0.8373436335447335,
+          "sr_annualised": 0.6406751253383716,
+          "sr0_annualised": 0.458368724569494,
+          "dsr": 0.6255566285869143,
+          "psr_vs_zero": 0.8696942025296408,
+          "n_obs": 783,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 5 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 2.951876397463198,
+          "avg_trial_corr": 0.8373436335447335,
+          "sr_annualised": 0.6406751253383716,
+          "sr0_annualised": 0.2140694947615568,
+          "dsr": 0.7730916014931362,
+          "psr_vs_zero": 0.8696942025296408,
+          "n_obs": 783,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 6 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 16.0,
+          "avg_trial_corr": 0.8666232021594791,
+          "sr_annualised": 0.7813885416883998,
+          "sr0_annualised": 0.3937727742728768,
+          "dsr": 0.7531178376427212,
+          "psr_vs_zero": 0.9161355359011485,
+          "n_obs": 784,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 6 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 2.600521574086251,
+          "avg_trial_corr": 0.8666232021594791,
+          "sr_annualised": 0.7813885416883998,
+          "sr0_annualised": 0.1627002147920217,
+          "dsr": 0.8626475066784931,
+          "psr_vs_zero": 0.9161355359011485,
+          "n_obs": 784,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 7 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 16.0,
+          "avg_trial_corr": 0.8880768132361012,
+          "sr_annualised": 0.9306852819275124,
+          "sr0_annualised": 0.3114386854583173,
+          "dsr": 0.8629619501711876,
+          "psr_vs_zero": 0.949890431488202,
+          "n_obs": 784,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 7 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 2.3430782411667854,
+          "avg_trial_corr": 0.8880768132361012,
+          "sr_annualised": 0.9306852819275124,
+          "sr0_annualised": 0.11402496632229749,
+          "dsr": 0.9254051257705578,
+          "psr_vs_zero": 0.949890431488202,
+          "n_obs": 784,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 8 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 16.0,
+          "avg_trial_corr": 0.8916896318049874,
+          "sr_annualised": 1.283008769345104,
+          "sr0_annualised": 0.2394984713735396,
+          "dsr": 0.9684947197143595,
+          "psr_vs_zero": 0.9888672304626,
+          "n_obs": 782,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 8 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 2.2997244183401513,
+          "avg_trial_corr": 0.8916896318049874,
+          "sr_annualised": 1.283008769345104,
+          "sr0_annualised": 0.08559449083602891,
+          "dsr": 0.9835504361600206,
+          "psr_vs_zero": 0.9888672304626,
+          "n_obs": 782,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 9 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 16.0,
+          "avg_trial_corr": 0.8763164947328844,
+          "sr_annualised": 1.219251598313018,
+          "sr0_annualised": 0.2355219670812483,
+          "dsr": 0.9582927714415189,
+          "psr_vs_zero": 0.9840511712742913,
+          "n_obs": 782,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 9 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 2.484202063205387,
+          "avg_trial_corr": 0.8763164947328844,
+          "sr_annualised": 1.219251598313018,
+          "sr0_annualised": 0.09252764560016169,
+          "dsr": 0.9763082804770183,
+          "psr_vs_zero": 0.9840511712742913,
+          "n_obs": 782,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 10 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 16.0,
+          "avg_trial_corr": 0.8798708961286307,
+          "sr_annualised": 1.4739817346229886,
+          "sr0_annualised": 0.5622473486636805,
+          "dsr": 0.9464410074786695,
+          "psr_vs_zero": 0.99540531789751,
+          "n_obs": 782,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 10 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 2.441549246456432,
+          "avg_trial_corr": 0.8798708961286307,
+          "sr_annualised": 1.4739817346229886,
+          "sr0_annualised": 0.21648608240291228,
+          "dsr": 0.9868697564554949,
+          "psr_vs_zero": 0.99540531789751,
+          "n_obs": 782,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 11 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 16.0,
+          "avg_trial_corr": 0.8396790375575139,
+          "sr_annualised": 0.9703612712647736,
+          "sr0_annualised": 0.4823185105392727,
+          "dsr": 0.8050796730669291,
+          "psr_vs_zero": 0.9563418083659245,
+          "n_obs": 783,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 11 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 2.9238515493098327,
+          "avg_trial_corr": 0.8396790375575139,
+          "sr_annualised": 0.9703612712647736,
+          "sr0_annualised": 0.22335523097847534,
+          "dsr": 0.9059442605817587,
+          "psr_vs_zero": 0.9563418083659245,
+          "n_obs": 783,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 12 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 16.0,
+          "avg_trial_corr": 0.8508639170453604,
+          "sr_annualised": 0.901081628023216,
+          "sr0_annualised": 0.4721116746374329,
+          "dsr": 0.7750524518226508,
+          "psr_vs_zero": 0.9437629162524879,
+          "n_obs": 783,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 12 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 2.789632995455676,
+          "avg_trial_corr": 0.8508639170453604,
+          "sr_annualised": 0.901081628023216,
+          "sr0_annualised": 0.209345510883916,
+          "dsr": 0.8884692444500258,
+          "psr_vs_zero": 0.9437629162524879,
+          "n_obs": 783,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 13 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 16.0,
+          "avg_trial_corr": 0.8260419953928008,
+          "sr_annualised": 0.2820327854645061,
+          "sr0_annualised": 0.31071709408207226,
+          "dsr": 0.47991982038818665,
+          "psr_vs_zero": 0.6897365662698098,
+          "n_obs": 783,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 13 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 3.087496055286391,
+          "avg_trial_corr": 0.8260419953928008,
+          "sr_annualised": 0.2820327854645061,
+          "sr0_annualised": 0.15080256093639988,
+          "dsr": 0.5910988110694768,
+          "psr_vs_zero": 0.6897365662698098,
+          "n_obs": 783,
+          "warnings": ""
+        },
+        {
+          "scope": "stitched OOS (conservative diagnostic)",
+          "n_trials_basis": "all attempted trials, all folds",
+          "n_trials": 224.0,
+          "avg_trial_corr": null,
+          "sr_annualised": -0.009301431030436291,
+          "sr0_annualised": 1.6238932472730945,
+          "dsr": 2.5438204509457607e-10,
+          "psr_vs_zero": 0.4858789001919579,
+          "n_obs": 3652,
+          "warnings": ""
+        }
+      ],
+      "selected_params": [
+        {
+          "fold": 0,
+          "selected_params": "{\"fast\": 10, \"slow\": 50}"
+        },
+        {
+          "fold": 1,
+          "selected_params": "{\"fast\": 50, \"slow\": 150}"
+        },
+        {
+          "fold": 2,
+          "selected_params": "{\"fast\": 100, \"slow\": 200}"
+        },
+        {
+          "fold": 3,
+          "selected_params": "{\"fast\": 100, \"slow\": 200}"
+        },
+        {
+          "fold": 4,
+          "selected_params": "{\"fast\": 100, \"slow\": 200}"
+        },
+        {
+          "fold": 5,
+          "selected_params": "{\"fast\": 20, \"slow\": 150}"
+        },
+        {
+          "fold": 6,
+          "selected_params": "{\"fast\": 20, \"slow\": 150}"
+        },
+        {
+          "fold": 7,
+          "selected_params": "{\"fast\": 10, \"slow\": 100}"
+        },
+        {
+          "fold": 8,
+          "selected_params": "{\"fast\": 50, \"slow\": 150}"
+        },
+        {
+          "fold": 9,
+          "selected_params": "{\"fast\": 10, \"slow\": 100}"
+        },
+        {
+          "fold": 10,
+          "selected_params": "{\"fast\": 100, \"slow\": 150}"
+        },
+        {
+          "fold": 11,
+          "selected_params": "{\"fast\": 50, \"slow\": 200}"
+        },
+        {
+          "fold": 12,
+          "selected_params": "{\"fast\": 50, \"slow\": 150}"
+        },
+        {
+          "fold": 13,
+          "selected_params": "{\"fast\": 20, \"slow\": 50}"
+        }
+      ],
+      "training_heatmap": {
+        "50": {
+          "10": 0.243,
+          "20": 0.302,
+          "50": null,
+          "100": null
+        },
+        "100": {
+          "10": 0.237,
+          "20": 0.322,
+          "50": 0.257,
+          "100": null
+        },
+        "150": {
+          "10": 0.278,
+          "20": 0.397,
+          "50": 0.346,
+          "100": 0.398
+        },
+        "200": {
+          "10": 0.233,
+          "20": 0.247,
+          "50": 0.372,
+          "100": 0.411
+        }
+      },
+      "exploratory_outer_test_heatmap": {
+        "50": {
+          "10": 0.111,
+          "20": 0.212,
+          "50": null,
+          "100": null
+        },
+        "100": {
+          "10": 0.164,
+          "20": 0.207,
+          "50": 0.166,
+          "100": null
+        },
+        "150": {
+          "10": 0.237,
+          "20": 0.302,
+          "50": 0.25,
+          "100": 0.309
+        },
+        "200": {
+          "10": 0.226,
+          "20": 0.213,
+          "50": 0.351,
+          "100": 0.399
+        }
+      },
+      "step_runtime_seconds": 32.87
+    },
+    "momentum_walkforward": {
+      "meta": {
+        "experiment": "momentum_wf",
+        "grid": {
+          "lookback": [
+            126,
+            252
+          ],
+          "skip": [
+            0,
+            21
+          ],
+          "quantile": [
+            0.1,
+            0.2
+          ]
+        },
+        "train_years": 3,
+        "test_years": 1,
+        "step_years": 1,
+        "objective": "sharpe",
+        "holdout_start": "2022-01-01 00:00:00",
+        "research_data_end": "2021-12-31",
+        "n_trials_total": 112,
+        "n_trials_invalid": 0,
+        "runtime_seconds": 16.13
+      },
+      "n_folds": 14,
+      "oos_metrics": {
+        "n_periods": 3652,
+        "start": "2008-01-03",
+        "end": "2021-12-31",
+        "total_return": -0.0936701562200053,
+        "cagr": -0.006763632298578459,
+        "mean_daily_arith": 5.969847568012319e-05,
+        "mean_ann_arith": 0.015044015871391044,
+        "ann_vol": 0.20896279171270699,
+        "sharpe": -0.020502521185786077,
+        "sharpe_per_period": -0.001291537435891025,
+        "sortino": -0.029020266527936933,
+        "max_drawdown": 0.5822541072041498,
+        "calmar": -0.011616289545909542,
+        "longest_dd_sessions": 3477,
+        "longest_dd_days": 4867,
+        "skew": 0.004013452049495445,
+        "kurtosis_excess": 0.5951955732022491,
+        "kurtosis_pearson": 3.595195573202249,
+        "best_day": 0.056876503680112656,
+        "worst_day": -0.06412718973260445,
+        "benchmark_corr": 0.7683659412825983,
+        "beta": 1.103044282221484,
+        "benchmark_cagr": -0.00188932293130184,
+        "benchmark_sharpe": -0.07302383659864105,
+        "time_invested": 0.994249726177437,
+        "avg_gross_exposure": 0.9838210950610959,
+        "avg_net_exposure": 0.9838210950610959,
+        "turnover_annual": 4.194134312306319,
+        "commissions": 10096.191956977238,
+        "spread_costs": 39542.8278383084,
+        "slippage_costs": 19771.4139191542,
+        "impact_costs": 25981.91353074109,
+        "interest": 4113.412123931346,
+        "borrow_fees": 0.0,
+        "total_trading_costs": 95392.34724518094,
+        "net_financing": 4113.412123931346,
+        "max_stale_marks": 1,
+        "n_round_trips": 879,
+        "hit_rate": 0.5494880546075085,
+        "avg_win": 5216.255028235787,
+        "avg_loss": -7097.173851574609,
+        "win_loss_ratio": 0.7349763634546569,
+        "profit_factor": 0.8964484433045437,
+        "avg_holding_days": 98.21046643913539
+      },
+      "benchmark_metrics": {
+        "n_periods": 3652,
+        "start": "2008-01-03",
+        "end": "2021-12-31",
+        "total_return": -0.02703394612673027,
+        "cagr": -0.00188932293130184,
+        "mean_daily_arith": 3.451501726645837e-05,
+        "mean_ann_arith": 0.008697784351147509,
+        "ann_vol": 0.14556069482905337,
+        "sharpe": -0.07302383659864105,
+        "sharpe_per_period": -0.004600069319519547,
+        "sortino": -0.10397582226758423,
+        "max_drawdown": 0.323198991428407,
+        "calmar": -0.005845695628417054,
+        "longest_dd_sessions": 1279,
+        "longest_dd_days": 1791,
+        "skew": 0.0565302438685583,
+        "kurtosis_excess": 1.6577439561880434,
+        "kurtosis_pearson": 4.657743956188043,
+        "best_day": 0.04765258439910669,
+        "worst_day": -0.05870177690817058,
+        "n_round_trips": 0,
+        "hit_rate": null,
+        "avg_win": null,
+        "avg_loss": null,
+        "win_loss_ratio": null,
+        "profit_factor": null,
+        "avg_holding_days": null
+      },
+      "sharpe_uncertainty": {
+        "sharpe_annualised": -0.020502521185786077,
+        "n_obs": 3652,
+        "se_iid_normal_annualised": 0.2626848747489566,
+        "se_iid_nonnormal_annualised": 0.2626855073813323,
+        "se_block_bootstrap_annualised": 0.24591411807132574,
+        "bootstrap_ci_low": -0.46536755117746414,
+        "bootstrap_ci_high": 0.4928252549228988,
+        "bootstrap_block": 20
+      },
+      "dsr": [
+        {
+          "scope": "fold 0 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 8.0,
+          "avg_trial_corr": 0.7411739584720204,
+          "sr_annualised": 0.11306270698795304,
+          "sr0_annualised": 0.5035280286986339,
+          "dsr": 0.24585928180892086,
+          "psr_vs_zero": 0.5789055205678962,
+          "n_obs": 782,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 0 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 2.811782290695857,
+          "avg_trial_corr": 0.7411739584720204,
+          "sr_annualised": 0.11306270698795304,
+          "sr0_annualised": 0.27760332681530914,
+          "dsr": 0.3860065097621756,
+          "psr_vs_zero": 0.5789055205678962,
+          "n_obs": 782,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 1 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 8.0,
+          "avg_trial_corr": 0.7852416816230693,
+          "sr_annualised": 0.7911619443786072,
+          "sr0_annualised": 0.40030186990924504,
+          "dsr": 0.754538202494932,
+          "psr_vs_zero": 0.9183896707017476,
+          "n_obs": 784,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 1 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 2.503308228638515,
+          "avg_trial_corr": 0.7852416816230693,
+          "sr_annualised": 0.7911619443786072,
+          "sr0_annualised": 0.19576453741154126,
+          "dsr": 0.8529825682305452,
+          "psr_vs_zero": 0.9183896707017476,
+          "n_obs": 784,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 2 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 8.0,
+          "avg_trial_corr": 0.7930146072110966,
+          "sr_annualised": 0.6096474546557147,
+          "sr0_annualised": 0.2222288212269734,
+          "dsr": 0.7527570518608875,
+          "psr_vs_zero": 0.8588304760851662,
+          "n_obs": 783,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 2 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 2.448897749522324,
+          "avg_trial_corr": 0.7930146072110966,
+          "sr_annualised": 0.6096474546557147,
+          "sr0_annualised": 0.10596453597633063,
+          "dsr": 0.8127880027838709,
+          "psr_vs_zero": 0.8588304760851662,
+          "n_obs": 783,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 3 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 8.0,
+          "avg_trial_corr": 0.808262881768065,
+          "sr_annualised": 0.23085706412162288,
+          "sr0_annualised": 0.17637923476104597,
+          "dsr": 0.5382265058506414,
+          "psr_vs_zero": 0.6578754920992567,
+          "n_obs": 782,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 3 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 2.3421598276235445,
+          "avg_trial_corr": 0.808262881768065,
+          "sr_annualised": 0.23085706412162288,
+          "sr0_annualised": 0.07964914879667116,
+          "dsr": 0.6050205429795487,
+          "psr_vs_zero": 0.6578754920992567,
+          "n_obs": 782,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 4 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 8.0,
+          "avg_trial_corr": 0.807857577252647,
+          "sr_annualised": 0.4722034969665585,
+          "sr0_annualised": 0.4160854542700263,
+          "dsr": 0.5393590046271868,
+          "psr_vs_zero": 0.7971570019465022,
+          "n_obs": 781,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 4 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 2.3449969592314712,
+          "avg_trial_corr": 0.807857577252647,
+          "sr_annualised": 0.4722034969665585,
+          "sr0_annualised": 0.18818442271289318,
+          "dsr": 0.6915092399014733,
+          "psr_vs_zero": 0.7971570019465022,
+          "n_obs": 781,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 5 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 8.0,
+          "avg_trial_corr": 0.8196855252817438,
+          "sr_annualised": 0.4287942827956346,
+          "sr0_annualised": 0.43576181507454165,
+          "dsr": 0.4950998475876608,
+          "psr_vs_zero": 0.7751538215108287,
+          "n_obs": 783,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 5 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 2.2622013230277935,
+          "avg_trial_corr": 0.8196855252817438,
+          "sr_annualised": 0.4287942827956346,
+          "sr0_annualised": 0.18800224840540075,
+          "dsr": 0.6643979274982352,
+          "psr_vs_zero": 0.7751538215108287,
+          "n_obs": 783,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 6 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 8.0,
+          "avg_trial_corr": 0.849934521554602,
+          "sr_annualised": 0.36436391534353596,
+          "sr0_annualised": 0.4543644906602207,
+          "dsr": 0.4369057169975802,
+          "psr_vs_zero": 0.7398791669532212,
+          "n_obs": 784,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 6 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 2.0504583491177857,
+          "avg_trial_corr": 0.849934521554602,
+          "sr_annualised": 0.36436391534353596,
+          "sr0_annualised": 0.16900595795007886,
+          "dsr": 0.6348541101063802,
+          "psr_vs_zero": 0.7398791669532212,
+          "n_obs": 784,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 7 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 8.0,
+          "avg_trial_corr": 0.8539071432871118,
+          "sr_annualised": 0.46006453538607583,
+          "sr0_annualised": 0.2719879460465502,
+          "dsr": 0.6298867086909082,
+          "psr_vs_zero": 0.7913260256201506,
+          "n_obs": 784,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 7 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 2.0226499969902174,
+          "avg_trial_corr": 0.8539071432871118,
+          "sr_annualised": 0.46006453538607583,
+          "sr0_annualised": 0.09883470315634522,
+          "dsr": 0.7378720443371776,
+          "psr_vs_zero": 0.7913260256201506,
+          "n_obs": 784,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 8 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 8.0,
+          "avg_trial_corr": 0.8572808610150494,
+          "sr_annualised": 0.4804011657484007,
+          "sr0_annualised": 0.18229266999888952,
+          "dsr": 0.6996944520020443,
+          "psr_vs_zero": 0.8005687221135582,
+          "n_obs": 782,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 8 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 1.999033972894654,
+          "avg_trial_corr": 0.8572808610150494,
+          "sr_annualised": 0.4804011657484007,
+          "sr0_annualised": 0.06488337081711708,
+          "dsr": 0.7672161908960031,
+          "psr_vs_zero": 0.8005687221135582,
+          "n_obs": 782,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 9 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 8.0,
+          "avg_trial_corr": 0.8176870645023244,
+          "sr_annualised": 0.6153585690595541,
+          "sr0_annualised": 0.2901858021320696,
+          "dsr": 0.7165508337729178,
+          "psr_vs_zero": 0.8607376072546267,
+          "n_obs": 782,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 9 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 2.2761905484837293,
+          "avg_trial_corr": 0.8176870645023244,
+          "sr_annualised": 0.6153585690595541,
+          "sr0_annualised": 0.12624246980016196,
+          "dsr": 0.8054712157011861,
+          "psr_vs_zero": 0.8607376072546267,
+          "n_obs": 782,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 10 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 8.0,
+          "avg_trial_corr": 0.8377346693283486,
+          "sr_annualised": 0.5004951948169228,
+          "sr0_annualised": 0.23931887647968553,
+          "dsr": 0.6773062611754262,
+          "psr_vs_zero": 0.8110702352613546,
+          "n_obs": 782,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 10 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 2.1358573147015596,
+          "avg_trial_corr": 0.8377346693283486,
+          "sr_annualised": 0.5004951948169228,
+          "sr0_annualised": 0.09503970334446253,
+          "dsr": 0.7625075677751769,
+          "psr_vs_zero": 0.8110702352613546,
+          "n_obs": 782,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 11 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 8.0,
+          "avg_trial_corr": 0.8394858668900359,
+          "sr_annualised": 0.5486502877968686,
+          "sr0_annualised": 0.43827367445841764,
+          "dsr": 0.5771466740136973,
+          "psr_vs_zero": 0.8333021957923403,
+          "n_obs": 783,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 11 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 2.123598931769749,
+          "avg_trial_corr": 0.8394858668900359,
+          "sr_annualised": 0.5486502877968686,
+          "sr0_annualised": 0.1725125762795256,
+          "dsr": 0.7463824176664844,
+          "psr_vs_zero": 0.8333021957923403,
+          "n_obs": 783,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 12 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 8.0,
+          "avg_trial_corr": 0.8389545319515381,
+          "sr_annualised": 0.06788035459776356,
+          "sr0_annualised": 0.2384778825545147,
+          "dsr": 0.38188523991575085,
+          "psr_vs_zero": 0.5475926427260289,
+          "n_obs": 783,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 12 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 2.127318276339233,
+          "avg_trial_corr": 0.8389545319515381,
+          "sr_annualised": 0.06788035459776356,
+          "sr0_annualised": 0.09412391708979108,
+          "dsr": 0.4815626762388255,
+          "psr_vs_zero": 0.5475926427260289,
+          "n_obs": 783,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 13 training selection",
+          "n_trials_basis": "raw_attempted",
+          "n_trials": 8.0,
+          "avg_trial_corr": 0.8066490700858632,
+          "sr_annualised": -0.15647142460499855,
+          "sr0_annualised": 0.32187754840531063,
+          "dsr": 0.19982364423727172,
+          "psr_vs_zero": 0.39146355520042786,
+          "n_obs": 783,
+          "warnings": ""
+        },
+        {
+          "scope": "fold 13 training selection",
+          "n_trials_basis": "implied_independent",
+          "n_trials": 2.3534565093989577,
+          "avg_trial_corr": 0.8066490700858632,
+          "sr_annualised": -0.15647142460499855,
+          "sr0_annualised": 0.14624073002324428,
+          "dsr": 0.2970169987392459,
+          "psr_vs_zero": 0.39146355520042786,
+          "n_obs": 783,
+          "warnings": ""
+        },
+        {
+          "scope": "stitched OOS (conservative diagnostic)",
+          "n_trials_basis": "all attempted trials, all folds",
+          "n_trials": 112.0,
+          "avg_trial_corr": null,
+          "sr_annualised": 0.07199375423771304,
+          "sr0_annualised": 0.8534186072321395,
+          "dsr": 0.0014679892535480526,
+          "psr_vs_zero": 0.6079700435235902,
+          "n_obs": 3652,
+          "warnings": ""
+        }
+      ],
+      "selected_params": [
+        {
+          "fold": 0,
+          "selected_params": "{\"lookback\": 252, \"quantile\": 0.1, \"skip\": 0}"
+        },
+        {
+          "fold": 1,
+          "selected_params": "{\"lookback\": 252, \"quantile\": 0.2, \"skip\": 21}"
+        },
+        {
+          "fold": 2,
+          "selected_params": "{\"lookback\": 126, \"quantile\": 0.1, \"skip\": 21}"
+        },
+        {
+          "fold": 3,
+          "selected_params": "{\"lookback\": 126, \"quantile\": 0.1, \"skip\": 21}"
+        },
+        {
+          "fold": 4,
+          "selected_params": "{\"lookback\": 252, \"quantile\": 0.1, \"skip\": 21}"
+        },
+        {
+          "fold": 5,
+          "selected_params": "{\"lookback\": 252, \"quantile\": 0.1, \"skip\": 21}"
+        },
+        {
+          "fold": 6,
+          "selected_params": "{\"lookback\": 252, \"quantile\": 0.1, \"skip\": 21}"
+        },
+        {
+          "fold": 7,
+          "selected_params": "{\"lookback\": 252, \"quantile\": 0.2, \"skip\": 21}"
+        },
+        {
+          "fold": 8,
+          "selected_params": "{\"lookback\": 126, \"quantile\": 0.1, \"skip\": 21}"
+        },
+        {
+          "fold": 9,
+          "selected_params": "{\"lookback\": 126, \"quantile\": 0.1, \"skip\": 21}"
+        },
+        {
+          "fold": 10,
+          "selected_params": "{\"lookback\": 252, \"quantile\": 0.2, \"skip\": 0}"
+        },
+        {
+          "fold": 11,
+          "selected_params": "{\"lookback\": 252, \"quantile\": 0.2, \"skip\": 21}"
+        },
+        {
+          "fold": 12,
+          "selected_params": "{\"lookback\": 252, \"quantile\": 0.2, \"skip\": 0}"
+        },
+        {
+          "fold": 13,
+          "selected_params": "{\"lookback\": 252, \"quantile\": 0.1, \"skip\": 21}"
+        }
+      ],
+      "step_runtime_seconds": 23.9
+    },
+    "cost_sensitivity": {
+      "table": [
+        {
+          "strategy": "sma",
+          "one_way_bps": 0,
+          "cagr": 0.0368575550788981,
+          "sharpe": 0.1851931026491405,
+          "max_drawdown": 0.5316695965367255,
+          "turnover_annual": 2.3924243739980975,
+          "total_trading_costs": 0.0,
+          "net_financing": 50266.02794634124,
+          "date_range": "2005-10-10 to 2021-12-31"
+        },
+        {
+          "strategy": "sma",
+          "one_way_bps": 5,
+          "cagr": 0.0343947838861689,
+          "sharpe": 0.17381228665495588,
+          "max_drawdown": 0.5409542126270855,
+          "turnover_annual": 2.392774014105747,
+          "total_trading_costs": 49183.92438830051,
+          "net_financing": 48838.84070012735,
+          "date_range": "2005-10-10 to 2021-12-31"
+        },
+        {
+          "strategy": "sma",
+          "one_way_bps": 10,
+          "cagr": 0.03193274496677212,
+          "sharpe": 0.1624124497794546,
+          "max_drawdown": 0.550060261102936,
+          "turnover_annual": 2.3931550232811407,
+          "total_trading_costs": 96066.27175629207,
+          "net_financing": 47476.358891166194,
+          "date_range": "2005-10-10 to 2021-12-31"
+        },
+        {
+          "strategy": "sma",
+          "one_way_bps": 20,
+          "cagr": 0.02700724762590223,
+          "sharpe": 0.13954896011814394,
+          "max_drawdown": 0.5678422897236939,
+          "turnover_annual": 2.3938472720149284,
+          "total_trading_costs": 183279.065168858,
+          "net_financing": 44852.664311455264,
+          "date_range": "2005-10-10 to 2021-12-31"
+        },
+        {
+          "strategy": "sma",
+          "one_way_bps": 50,
+          "cagr": 0.01236704493630647,
+          "sharpe": 0.07113423694431885,
+          "max_drawdown": 0.6170595426121508,
+          "turnover_annual": 2.3954169681832593,
+          "total_trading_costs": 399069.86600631534,
+          "net_financing": 37994.05214350116,
+          "date_range": "2005-10-10 to 2021-12-31"
+        },
+        {
+          "strategy": "momentum",
+          "one_way_bps": 0,
+          "cagr": 0.06263667503202597,
+          "sharpe": 0.29917265133609805,
+          "max_drawdown": 0.4619517479431221,
+          "turnover_annual": 4.1361725043761,
+          "total_trading_costs": 0.0,
+          "net_financing": 5081.7116570174185,
+          "date_range": "2006-01-02 to 2021-12-31"
+        },
+        {
+          "strategy": "momentum",
+          "one_way_bps": 5,
+          "cagr": 0.058274363215477853,
+          "sharpe": 0.2802314533944243,
+          "max_drawdown": 0.4671278819694472,
+          "turnover_annual": 4.136904161069744,
+          "total_trading_costs": 94896.14416512613,
+          "net_financing": 4757.9339484707525,
+          "date_range": "2006-01-02 to 2021-12-31"
+        },
+        {
+          "strategy": "momentum",
+          "one_way_bps": 10,
+          "cagr": 0.053913325644833865,
+          "sharpe": 0.2612333481473433,
+          "max_drawdown": 0.4722614172265638,
+          "turnover_annual": 4.137608144207771,
+          "total_trading_costs": 182884.55948668803,
+          "net_financing": 4457.169110225463,
+          "date_range": "2006-01-02 to 2021-12-31"
+        },
+        {
+          "strategy": "momentum",
+          "one_way_bps": 20,
+          "cagr": 0.045212373682598894,
+          "sharpe": 0.22314360749886658,
+          "max_drawdown": 0.48238130781426347,
+          "turnover_annual": 4.139088059458969,
+          "total_trading_costs": 339811.61347601184,
+          "net_financing": 3876.512489698671,
+          "date_range": "2006-01-02 to 2021-12-31"
+        },
+        {
+          "strategy": "momentum",
+          "one_way_bps": 50,
+          "cagr": 0.019464887607767878,
+          "sharpe": 0.1091286631570624,
+          "max_drawdown": 0.5314699434378467,
+          "turnover_annual": 4.142872433193696,
+          "total_trading_costs": 687023.6608041702,
+          "net_financing": 2565.8749369105717,
+          "date_range": "2006-01-02 to 2021-12-31"
+        }
+      ],
+      "step_runtime_seconds": 6.99
+    },
+    "robustness": {
+      "table": [
+        {
+          "experiment": "leverage_cap (fixed_fraction 0.5/asset)",
+          "setting": "0.5",
+          "cagr": 0.04188551494678405,
+          "sharpe": 0.24071956939206307,
+          "max_drawdown": 0.29211117216677396,
+          "ann_vol": 0.12018834536583493,
+          "avg_gross_exposure": 0.48245407755555386,
+          "turnover_annual": 1.47842335825119,
+          "total_trading_costs": 50287.47125253565
+        },
+        {
+          "experiment": "leverage_cap (fixed_fraction 0.5/asset)",
+          "setting": "1.0",
+          "cagr": 0.032821580688266794,
+          "sharpe": 0.166530207613187,
+          "max_drawdown": 0.5461644768745384,
+          "ann_vol": 0.20885857576623532,
+          "avg_gross_exposure": 0.8702427448963704,
+          "turnover_annual": 2.3931147536838058,
+          "total_trading_costs": 82184.7962908964
+        },
+        {
+          "experiment": "leverage_cap (fixed_fraction 0.5/asset)",
+          "setting": "1.5",
+          "cagr": 0.026423891328483107,
+          "sharpe": 0.16275923600987072,
+          "max_drawdown": 0.7120472057796163,
+          "ann_vol": 0.27661921454529265,
+          "avg_gross_exposure": 1.1669264906781578,
+          "turnover_annual": 2.719403271602371,
+          "total_trading_costs": 102799.65297965438
+        },
+        {
+          "experiment": "execution_delay_sessions",
+          "setting": "1",
+          "cagr": 0.032821580688266794,
+          "sharpe": 0.166530207613187,
+          "max_drawdown": 0.5461644768745384,
+          "ann_vol": 0.20885857576623532,
+          "avg_gross_exposure": 0.8702427448963704,
+          "turnover_annual": 2.3931147536838058,
+          "total_trading_costs": 82184.7962908964
+        },
+        {
+          "experiment": "execution_delay_sessions",
+          "setting": "2",
+          "cagr": 0.02793426958893086,
+          "sharpe": 0.1437562585625454,
+          "max_drawdown": 0.5627450327675683,
+          "ann_vol": 0.20868501888575117,
+          "avg_gross_exposure": 0.8704371127406836,
+          "turnover_annual": 2.2682007009720326,
+          "total_trading_costs": 74309.93459280705
+        },
+        {
+          "experiment": "execution_delay_sessions",
+          "setting": "3",
+          "cagr": 0.021631266023227402,
+          "sharpe": 0.11423973451297216,
+          "max_drawdown": 0.5841596994934619,
+          "ann_vol": 0.20859951785034012,
+          "avg_gross_exposure": 0.8701561982350934,
+          "turnover_annual": 2.2030737877129183,
+          "total_trading_costs": 66213.6068304702
+        },
+        {
+          "experiment": "sizing_rule",
+          "setting": "equal_weight",
+          "cagr": 0.032821580688266794,
+          "sharpe": 0.166530207613187,
+          "max_drawdown": 0.5461644768745384,
+          "ann_vol": 0.20885857576623532,
+          "avg_gross_exposure": 0.8702427448963704,
+          "turnover_annual": 2.3931147536838058,
+          "total_trading_costs": 82184.7962908964
+        },
+        {
+          "experiment": "sizing_rule",
+          "setting": "vol_target",
+          "cagr": 0.03970352874618088,
+          "sharpe": 0.29051189625129514,
+          "max_drawdown": 0.17604928723098512,
+          "ann_vol": 0.07796905076085169,
+          "avg_gross_exposure": 0.34088072322021457,
+          "turnover_annual": 1.0052580416158696,
+          "total_trading_costs": 28434.628934090128
+        },
+        {
+          "experiment": "sizing_rule",
+          "setting": "kelly",
+          "cagr": 0.04631614956629182,
+          "sharpe": 0.3339141188812032,
+          "max_drawdown": 0.22425412543528223,
+          "ann_vol": 0.08981260479236806,
+          "avg_gross_exposure": 0.3290647164714188,
+          "turnover_annual": 0.9217833233610706,
+          "total_trading_costs": 32533.021391994334
+        }
+      ],
+      "train_window": [
+        {
+          "experiment": "walk-forward train_years (common OOS dates)",
+          "setting": 2,
+          "cagr": 0.015155120770823372,
+          "sharpe": 0.17649139808945186,
+          "max_drawdown": 0.49735433823868125,
+          "ann_vol": 0.20865079080057589,
+          "date_range": "2009-01-05 to 2021-12-31"
+        },
+        {
+          "experiment": "walk-forward train_years (common OOS dates)",
+          "setting": 3,
+          "cagr": -0.02172339984810756,
+          "sharpe": -0.010538415091679182,
+          "max_drawdown": 0.5864881120465584,
+          "ann_vol": 0.19933088165430277,
+          "date_range": "2009-01-05 to 2021-12-31"
+        },
+        {
+          "experiment": "walk-forward train_years (common OOS dates)",
+          "setting": 4,
+          "cagr": 0.004654914937021415,
+          "sharpe": 0.12451515194765578,
+          "max_drawdown": 0.4955169889522135,
+          "ann_vol": 0.203357192485264,
+          "date_range": "2009-01-05 to 2021-12-31"
+        }
+      ],
+      "step_runtime_seconds": 76.63
+    },
+    "total_runtime_seconds": 157.11,
+    "holdout_consumed_by_this_run": false,
+    "demo_sma_market": {
+      "metrics": {
+        "n_periods": 4279,
+        "start": "2005-01-04",
+        "end": "2021-12-31",
+        "total_return": 4.118676721965929,
+        "cagr": 0.10094063864971226,
+        "mean_daily_arith": 0.0004269757851740541,
+        "mean_ann_arith": 0.10759789786386163,
+        "ann_vol": 0.15081833186620638,
+        "sharpe": 0.7134271844308266,
+        "sharpe_per_period": 0.04494168829897569,
+        "sortino": 0.989763242916021,
+        "max_drawdown": 0.3360060295415872,
+        "calmar": 0.3004131764761052,
+        "longest_dd_sessions": 470,
+        "longest_dd_days": 681,
+        "skew": -0.5600714870166997,
+        "kurtosis_excess": 14.171042651518619,
+        "kurtosis_pearson": 17.17104265151862,
+        "best_day": 0.08696055459712948,
+        "worst_day": -0.1085118047796193,
+        "benchmark_corr": 0.8165959768365122,
+        "beta": 0.6720974648808041,
+        "benchmark_cagr": 0.10194722867491479,
+        "benchmark_sharpe": 0.6217923613933877,
+        "time_invested": 0.9123627015657864,
+        "avg_gross_exposure": 0.8894115414937944,
+        "avg_net_exposure": 0.8894115414937944,
+        "turnover_annual": 1.9299760609977208,
+        "commissions": 12937.005379512198,
+        "spread_costs": 12936.10732701212,
+        "slippage_costs": 12936.10732701212,
+        "impact_costs": 23487.242970527794,
+        "interest": 0.0,
+        "borrow_fees": 0.0,
+        "total_trading_costs": 62296.46300406424,
+        "net_financing": 0.0,
+        "max_stale_marks": 0,
+        "n_round_trips": 688,
+        "hit_rate": 0.6816860465116279,
+        "avg_win": 8285.985781043426,
+        "avg_loss": -6513.708501484485,
+        "win_loss_ratio": 1.2720842173325742,
+        "profit_factor": 2.724235150360627,
+        "avg_holding_days": 167.01162790697674
+      },
+      "benchmark_metrics": {
+        "n_periods": 4279,
+        "start": "2005-01-04",
+        "end": "2021-12-31",
+        "total_return": 4.198727162121698,
+        "cagr": 0.10194722867491479,
+        "mean_daily_arith": 0.00045214106541684645,
+        "mean_ann_arith": 0.11393954848504531,
+        "ann_vol": 0.18324372501089553,
+        "sharpe": 0.6217923613933877,
+        "sharpe_per_period": 0.03916923703253579,
+        "sortino": 0.8660212781253538,
+        "max_drawdown": 0.5203491723406896,
+        "calmar": 0.19592080490168748,
+        "longest_dd_sessions": 892,
+        "longest_dd_days": 1294,
+        "skew": -0.3544392692867667,
+        "kurtosis_excess": 14.063707494341763,
+        "kurtosis_pearson": 17.063707494341763,
+        "best_day": 0.10445187484607077,
+        "worst_day": -0.11359195369266395,
+        "time_invested": 1.0,
+        "avg_gross_exposure": 0.9719442522961136,
+        "avg_net_exposure": 0.9719442522961136,
+        "turnover_annual": 0.05227046045523534,
+        "commissions": 270.44417566018393,
+        "spread_costs": 269.37435193450005,
+        "slippage_costs": 269.37435193450005,
+        "impact_costs": 631.1181127671304,
+        "interest": 0.0,
+        "borrow_fees": 0.0,
+        "total_trading_costs": 1440.3109922963145,
+        "net_financing": 0.0,
+        "max_stale_marks": 0,
+        "n_round_trips": 18,
+        "hit_rate": 0.9444444444444444,
+        "avg_win": 29342.775489813826,
+        "avg_loss": -24967.431317818315,
+        "win_loss_ratio": 1.1752420630020115,
+        "profit_factor": 19.979115071034194,
+        "avg_holding_days": 3124.8333333333335
+      },
+      "warnings": [],
+      "sharpe_uncertainty": {
+        "sharpe_annualised": 0.7134271844308266,
+        "n_obs": 4279,
+        "se_iid_normal_annualised": 0.24279979104378363,
+        "se_iid_nonnormal_annualised": 0.24668906315156738,
+        "se_block_bootstrap_annualised": 0.2333839386098671,
+        "bootstrap_ci_low": 0.28860684851191953,
+        "bootstrap_ci_high": 1.2079644515971286,
+        "bootstrap_block": 20
+      },
+      "order_status_counts": {
+        "submitted": 801,
+        "filled": 729,
+        "resized": 72
+      },
+      "runtime_seconds": 4.29,
+      "scored_range": "2005-01-04 to 2021-12-31",
+      "data_mode": "market",
+      "sample": "development sample before hold-out; fixed a-priori parameters (not OOS)"
+    }
+  }
+}

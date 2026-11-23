@@ -1,0 +1,237 @@
+{
+  "label": "walk_forward_schedule",
+  "data_mode": "synthetic",
+  "strategy": {
+    "strategy": "walk_forward_schedule",
+    "segments": [
+      [
+        "2008-01-03",
+        {
+          "strategy": "sma_crossover",
+          "fast": 10,
+          "slow": 50,
+          "allow_short": false
+        }
+      ],
+      [
+        "2009-01-05",
+        {
+          "strategy": "sma_crossover",
+          "fast": 50,
+          "slow": 150,
+          "allow_short": false
+        }
+      ],
+      [
+        "2010-01-04",
+        {
+          "strategy": "sma_crossover",
+          "fast": 100,
+          "slow": 200,
+          "allow_short": false
+        }
+      ],
+      [
+        "2011-01-03",
+        {
+          "strategy": "sma_crossover",
+          "fast": 100,
+          "slow": 200,
+          "allow_short": false
+        }
+      ],
+      [
+        "2012-01-03",
+        {
+          "strategy": "sma_crossover",
+          "fast": 100,
+          "slow": 200,
+          "allow_short": false
+        }
+      ],
+      [
+        "2013-01-03",
+        {
+          "strategy": "sma_crossover",
+          "fast": 20,
+          "slow": 150,
+          "allow_short": false
+        }
+      ],
+      [
+        "2014-01-03",
+        {
+          "strategy": "sma_crossover",
+          "fast": 20,
+          "slow": 150,
+          "allow_short": false
+        }
+      ],
+      [
+        "2015-01-05",
+        {
+          "strategy": "sma_crossover",
+          "fast": 10,
+          "slow": 100,
+          "allow_short": false
+        }
+      ],
+      [
+        "2016-01-04",
+        {
+          "strategy": "sma_crossover",
+          "fast": 50,
+          "slow": 150,
+          "allow_short": false
+        }
+      ],
+      [
+        "2017-01-03",
+        {
+          "strategy": "sma_crossover",
+          "fast": 10,
+          "slow": 100,
+          "allow_short": false
+        }
+      ],
+      [
+        "2018-01-03",
+        {
+          "strategy": "sma_crossover",
+          "fast": 100,
+          "slow": 150,
+          "allow_short": false
+        }
+      ],
+      [
+        "2019-01-03",
+        {
+          "strategy": "sma_crossover",
+          "fast": 50,
+          "slow": 200,
+          "allow_short": false
+        }
+      ],
+      [
+        "2020-01-03",
+        {
+          "strategy": "sma_crossover",
+          "fast": 50,
+          "slow": 150,
+          "allow_short": false
+        }
+      ],
+      [
+        "2021-01-04",
+        {
+          "strategy": "sma_crossover",
+          "fast": 20,
+          "slow": 50,
+          "allow_short": false
+        }
+      ]
+    ]
+  },
+  "sizer": {
+    "type": "EqualWeight",
+    "target_gross": 1.0
+  },
+  "constraints": {
+    "max_gross": 1.0,
+    "max_net": 1.0,
+    "max_position": 0.5,
+    "allow_short": false
+  },
+  "costs": {
+    "commission": {
+      "fixed": 0.0,
+      "per_share": 0.0,
+      "rate_bps": 1.0,
+      "minimum": 1.0,
+      "maximum": null
+    },
+    "spread_bps_full": 4.0,
+    "slippage_bps": 1.0,
+    "slippage_stochastic_sd_bps": 0.0,
+    "slippage_seed": 7,
+    "impact_coefficient": 0.5,
+    "impact_fallback_bps": 5.0
+  },
+  "execution": {
+    "expires_after": 5,
+    "insufficient_cash": "resize",
+    "max_participation": null,
+    "adv_window": 20,
+    "vol_window": 20
+  },
+  "financing": {
+    "credit_rate": 0.02,
+    "debit_rate": 0.04,
+    "borrow_fee": 0.005,
+    "day_count_basis": 365,
+    "short_proceeds_earn_interest": false
+  },
+  "config": {
+    "initial_cash": 1000000,
+    "fractional": false,
+    "rebalance_band": 0.02,
+    "cash_buffer": 0.005,
+    "trade_start": "2008-01-03 00:00:00",
+    "liquidate_on_final_open": false,
+    "universe_exit": "liquidate",
+    "check_accounting": true,
+    "execution_delay": 1
+  },
+  "execution_convention": "signal at close t, fill at next tradable open (t+1)",
+  "data_start": "2005-01-03",
+  "data_end": "2021-12-31",
+  "trade_start": "2008-01-03",
+  "n_symbols": 6,
+  "provenance": {
+    "source_file": "etf_like.csv",
+    "data_mode": "synthetic",
+    "label": "SYNTHETIC DATA - NOT MARKET DATA",
+    "generator": "backtester.synthetic.generate",
+    "spec": {
+      "n_assets": 6,
+      "start": "2005-01-01",
+      "end": "2024-12-31",
+      "seed": 101,
+      "prefix": "ETF",
+      "late_listing_frac": 0.0,
+      "delist_frac": 0.0,
+      "crash_delist_frac": 0.5,
+      "halt_prob": 0.0002,
+      "alpha_ann_sd": 0.06,
+      "alpha_halflife_days": 252.0
+    },
+    "regimes": {
+      "calm": {
+        "annual_drift": 0.09,
+        "annual_vol": 0.12
+      },
+      "stressed": {
+        "annual_drift": -0.2,
+        "annual_vol": 0.3
+      },
+      "sideways": {
+        "annual_drift": 0.0,
+        "annual_vol": 0.16
+      }
+    },
+    "calendar": "pandas business days (Mon-Fri), no holidays",
+    "timezone": "tz-naive session dates",
+    "adjustment_convention": "no corporate actions are simulated; prices are total-return-like",
+    "currency": "synthetic units",
+    "n_rows": 31292,
+    "slice": [
+      "None",
+      "2021-12-31 00:00:00"
+    ],
+    "holdout_start_excluded": "2022-01-01"
+  },
+  "impact_fallbacks": 0,
+  "insolvent": false,
+  "runtime_seconds": 0.45,
+  "sample": "walk-forward out-of-sample (stitched)"
+}

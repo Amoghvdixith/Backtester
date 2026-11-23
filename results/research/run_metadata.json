@@ -1,0 +1,560 @@
+{
+  "generated_utc": "2026-11-22T17:37:36+00:00",
+  "mode": "research",
+  "environment": {
+    "python": "3.14.4",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "numpy": "2.5.5",
+    "pandas": "3.1.1",
+    "scipy": "1.18.1",
+    "matplotlib": "3.11.2",
+    "yaml": "6.0.4",
+    "backtester": "0.1.0"
+  },
+  "holdout_start": "2022-01-01",
+  "holdout_evaluations_logged": {
+    "data/synthetic/etf_like.csv": 0,
+    "data/synthetic/stock_universe.csv": 0,
+    "data/synthetic/stock_universe_large.csv": 0
+  },
+  "datasets": {
+    "etf_like": {
+      "n_assets": 6,
+      "start": "2005-01-01",
+      "end": "2024-12-31",
+      "seed": 101,
+      "prefix": "ETF",
+      "late_listing_frac": 0.0,
+      "delist_frac": 0.0,
+      "crash_delist_frac": 0.5,
+      "halt_prob": 0.0002,
+      "alpha_ann_sd": 0.06,
+      "alpha_halflife_days": 252.0
+    },
+    "stock_universe": {
+      "n_assets": 40,
+      "start": "2005-01-01",
+      "end": "2024-12-31",
+      "seed": 202,
+      "prefix": "STK",
+      "late_listing_frac": 0.15,
+      "delist_frac": 0.1,
+      "crash_delist_frac": 0.5,
+      "halt_prob": 0.0005,
+      "alpha_ann_sd": 0.06,
+      "alpha_halflife_days": 252.0
+    },
+    "stock_universe_large": {
+      "n_assets": 150,
+      "start": "2005-01-01",
+      "end": "2024-12-31",
+      "seed": 303,
+      "prefix": "STK",
+      "late_listing_frac": 0.15,
+      "delist_frac": 0.1,
+      "crash_delist_frac": 0.5,
+      "halt_prob": 0.0005,
+      "alpha_ann_sd": 0.06,
+      "alpha_halflife_days": 252.0
+    }
+  },
+  "configs": {
+    "sma": {
+      "experiment": "sma_crossover",
+      "seed": 7,
+      "data": {
+        "mode": "synthetic",
+        "path": "data/synthetic/etf_like.csv"
+      },
+      "strategy": {
+        "name": "sma_crossover",
+        "params": {
+          "fast": 50,
+          "slow": 200,
+          "allow_short": false
+        }
+      },
+      "sizing": {
+        "type": "equal_weight",
+        "target_gross": 1.0
+      },
+      "constraints": {
+        "max_gross": 1.0,
+        "max_net": 1.0,
+        "max_position": 0.5,
+        "allow_short": false
+      },
+      "costs": {
+        "commission": {
+          "rate_bps": 1.0,
+          "minimum": 1.0
+        },
+        "spread": {
+          "spread_bps": 4.0
+        },
+        "slippage": {
+          "bps": 1.0
+        },
+        "impact": {
+          "coefficient": 0.5,
+          "fallback_bps": 5.0
+        }
+      },
+      "execution": {
+        "expires_after": 5,
+        "insufficient_cash": "resize",
+        "adv_window": 20,
+        "vol_window": 20
+      },
+      "financing": {
+        "credit_rate": 0.02,
+        "debit_rate": 0.04,
+        "borrow_fee": 0.005,
+        "day_count_basis": 365
+      },
+      "backtest": {
+        "initial_cash": 1000000,
+        "fractional": false,
+        "rebalance_band": 0.02,
+        "cash_buffer": 0.005,
+        "universe_exit": "liquidate",
+        "liquidate_on_final_open": false
+      },
+      "benchmark": {
+        "name": "equal_weight_universe",
+        "params": {
+          "min_history": 1,
+          "rebalance": "monthly"
+        }
+      },
+      "risk_free_annual": 0.02
+    },
+    "momentum": {
+      "experiment": "momentum_12_1",
+      "seed": 11,
+      "data": {
+        "mode": "synthetic",
+        "path": "data/synthetic/stock_universe.csv",
+        "membership": "data/synthetic/stock_universe_membership.csv"
+      },
+      "strategy": {
+        "name": "momentum_12_1",
+        "params": {
+          "lookback": 252,
+          "skip": 21,
+          "quantile": 0.1,
+          "mode": "long_only",
+          "min_names": 1,
+          "min_universe": 10,
+          "max_stale": 5,
+          "min_obs_frac": 0.9
+        }
+      },
+      "sizing": {
+        "type": "equal_weight",
+        "target_gross": 1.0
+      },
+      "constraints": {
+        "max_gross": 1.0,
+        "max_net": 1.0,
+        "max_position": 0.25,
+        "allow_short": false
+      },
+      "costs": {
+        "commission": {
+          "rate_bps": 1.0,
+          "minimum": 1.0
+        },
+        "spread": {
+          "spread_bps": 8.0
+        },
+        "slippage": {
+          "bps": 2.0
+        },
+        "impact": {
+          "coefficient": 0.5,
+          "fallback_bps": 10.0
+        }
+      },
+      "execution": {
+        "expires_after": 5,
+        "insufficient_cash": "resize",
+        "adv_window": 20,
+        "vol_window": 20
+      },
+      "financing": {
+        "credit_rate": 0.02,
+        "debit_rate": 0.04,
+        "borrow_fee": 0.005,
+        "day_count_basis": 365
+      },
+      "backtest": {
+        "initial_cash": 1000000,
+        "fractional": false,
+        "rebalance_band": 0.0,
+        "cash_buffer": 0.01,
+        "universe_exit": "liquidate"
+      },
+      "benchmark": {
+        "name": "equal_weight_universe",
+        "params": {
+          "min_history": 253,
+          "rebalance": "monthly"
+        }
+      },
+      "risk_free_annual": 0.02
+    },
+    "walkforward": {
+      "holdout_start": "2022-01-01",
+      "train_years": 3,
+      "test_years": 1,
+      "step_years": 1,
+      "objective": "sharpe",
+      "min_train_obs": 126,
+      "grids": {
+        "sma_crossover": {
+          "fast": [
+            10,
+            20,
+            50,
+            100
+          ],
+          "slow": [
+            50,
+            100,
+            150,
+            200
+          ]
+        },
+        "momentum_12_1": {
+          "lookback": [
+            126,
+            252
+          ],
+          "skip": [
+            0,
+            21
+          ],
+          "quantile": [
+            0.1,
+            0.2
+          ]
+        }
+      },
+      "research_mode": {
+        "grids": {
+          "sma_crossover": {
+            "fast": [
+              5,
+              10,
+              20,
+              30,
+              50,
+              75,
+              100
+            ],
+            "slow": [
+              50,
+              75,
+              100,
+              150,
+              200,
+              250
+            ]
+          },
+          "momentum_12_1": {
+            "lookback": [
+              126,
+              189,
+              252
+            ],
+            "skip": [
+              0,
+              10,
+              21
+            ],
+            "quantile": [
+              0.1,
+              0.2,
+              0.3
+            ]
+          }
+        }
+      }
+    },
+    "cost_scenarios": {
+      "one_way_bps": [
+        0,
+        5,
+        10,
+        20,
+        50
+      ],
+      "mode": "replace_detailed_model",
+      "robustness": {
+        "leverage_caps": [
+          0.5,
+          1.0,
+          1.5
+        ],
+        "execution_delay_sessions": [
+          1,
+          2,
+          3
+        ],
+        "sizers": [
+          {
+            "type": "equal_weight",
+            "target_gross": 1.0
+          },
+          {
+            "type": "vol_target",
+            "target_vol": 0.1,
+            "lookback": 60,
+            "max_leverage_per_asset": 1.0
+          },
+          {
+            "type": "kelly",
+            "lookback": 252,
+            "kelly_fraction": 0.5,
+            "shrinkage": 0.5,
+            "cap": 0.5
+          }
+        ],
+        "train_years": [
+          2,
+          3,
+          4
+        ]
+      }
+    }
+  },
+  "experiments": {
+    "sma_demo": {
+      "metrics": {
+        "n_periods": 4434,
+        "start": "2005-01-04",
+        "end": "2021-12-31",
+        "total_return": 0.7470062064169849,
+        "cagr": 0.032215688976229284,
+        "mean_daily_arith": 0.00020849944796551292,
+        "mean_ann_arith": 0.05254186088730926,
+        "ann_vol": 0.20411741714122514,
+        "sharpe": 0.16272021791185037,
+        "sharpe_per_period": 0.010250410235166523,
+        "sortino": 0.23061726257525664,
+        "max_drawdown": 0.5461644768745392,
+        "calmar": 0.05898532464173724,
+        "longest_dd_sessions": 2461,
+        "longest_dd_days": 3445,
+        "skew": -0.01742103987204803,
+        "kurtosis_excess": 1.1026587101995027,
+        "kurtosis_pearson": 4.102658710199503,
+        "best_day": 0.06450736374855515,
+        "worst_day": -0.05795510189584607,
+        "benchmark_corr": 0.8017592244756101,
+        "beta": 0.8315887426414043,
+        "benchmark_cagr": 0.03502966140332031,
+        "benchmark_sharpe": 0.17515176530354473,
+        "time_invested": 0.9106901217861976,
+        "avg_gross_exposure": 0.8311858422724693,
+        "avg_net_exposure": 0.8311858422724693,
+        "turnover_annual": 2.2857106409226255,
+        "commissions": 9709.42540289221,
+        "spread_costs": 19418.537738417996,
+        "slippage_costs": 9709.268869208998,
+        "impact_costs": 43347.564280377184,
+        "interest": 63339.67716385916,
+        "borrow_fees": 0.0,
+        "total_trading_costs": 82184.7962908964,
+        "net_financing": 63339.67716385916,
+        "max_stale_marks": 1,
+        "n_round_trips": 443,
+        "hit_rate": 0.5304740406320542,
+        "avg_win": 16207.23867849016,
+        "avg_loss": -15398.465869602367,
+        "win_loss_ratio": 1.0525229471388033,
+        "profit_factor": 1.1891485220077826,
+        "avg_holding_days": 152.0406320541761
+      },
+      "benchmark_metrics": {
+        "n_periods": 4434,
+        "start": "2005-01-04",
+        "end": "2021-12-31",
+        "total_return": 0.8327279452596013,
+        "cagr": 0.03502966140332031,
+        "mean_daily_arith": 0.0002134871310883961,
+        "mean_ann_arith": 0.05379875703427582,
+        "ann_vol": 0.19679561985086105,
+        "sharpe": 0.17515176530354473,
+        "sharpe_per_period": 0.011033524111598355,
+        "sortino": 0.24902055942371645,
+        "max_drawdown": 0.5147277793233231,
+        "calmar": 0.0680547326382333,
+        "longest_dd_sessions": 2423,
+        "longest_dd_days": 3393,
+        "skew": -0.0328036582737891,
+        "kurtosis_excess": 1.0555382853067723,
+        "kurtosis_pearson": 4.055538285306772,
+        "best_day": 0.055484871087537746,
+        "worst_day": -0.08127310306485147,
+        "time_invested": 1.0,
+        "avg_gross_exposure": 0.983720885435636,
+        "avg_net_exposure": 0.983720885435636,
+        "turnover_annual": 0.19329258156065332,
+        "commissions": 1080.9107562149281,
+        "spread_costs": 2153.972579505599,
+        "slippage_costs": 1076.9862897527994,
+        "impact_costs": 2260.9590530657742,
+        "interest": 8614.404142155216,
+        "borrow_fees": 0.0,
+        "total_trading_costs": 6572.8286785391,
+        "net_financing": 8614.404142155216,
+        "max_stale_marks": 1,
+        "n_round_trips": 186,
+        "hit_rate": 0.7043010752688172,
+        "avg_win": 14325.446477346208,
+        "avg_loss": -9712.534552224723,
+        "win_loss_ratio": 1.4749441971421215,
+        "profit_factor": 3.5130489059203254,
+        "avg_holding_days": 1879.3655913978494
+      },
+      "warnings": [],
+      "sharpe_uncertainty": {
+        "sharpe_annualised": 0.16272021791185037,
+        "n_obs": 4434,
+        "se_iid_normal_annualised": 0.2384041623801956,
+        "se_iid_nonnormal_annualised": 0.238428804880756,
+        "se_block_bootstrap_annualised": 0.23136574556517062,
+        "bootstrap_ci_low": -0.3056370732071012,
+        "bootstrap_ci_high": 0.6297228745026663,
+        "bootstrap_block": 20
+      },
+      "order_status_counts": {
+        "submitted": 524,
+        "filled": 508,
+        "resized": 16
+      },
+      "runtime_seconds": 36.85,
+      "scored_range": "2005-01-04 to 2021-12-31",
+      "data_mode": "synthetic",
+      "sample": "development sample before hold-out; fixed a-priori parameters (not OOS)",
+      "step_runtime_seconds": 37.13
+    },
+    "momentum_demo": {
+      "metrics": {
+        "n_periods": 4182,
+        "start": "2005-12-22",
+        "end": "2021-12-31",
+        "total_return": 1.7238616988596176,
+        "cagr": 0.06224205029794283,
+        "mean_daily_arith": 0.00029956349560945786,
+        "mean_ann_arith": 0.07549000089358338,
+        "ann_vol": 0.17382139497441967,
+        "sharpe": 0.32309589225690216,
+        "sharpe_per_period": 0.02035312810805435,
+        "sortino": 0.4648516334333525,
+        "max_drawdown": 0.5068608718665186,
+        "calmar": 0.1227990830476538,
+        "longest_dd_sessions": 1500,
+        "longest_dd_days": 2100,
+        "skew": 0.00962426222593603,
+        "kurtosis_excess": 1.0476983065509948,
+        "kurtosis_pearson": 4.047698306550995,
+        "best_day": 0.05429222323924798,
+        "worst_day": -0.050540280273247196,
+        "benchmark_corr": 0.8891487009206392,
+        "beta": 1.087940941190179,
+        "benchmark_cagr": 0.0164305249582386,
+        "benchmark_sharpe": 0.04966156451736257,
+        "time_invested": 0.9983261597321855,
+        "avg_gross_exposure": 0.9600994297862387,
+        "avg_net_exposure": 0.9600994297862387,
+        "turnover_annual": 3.983338885219846,
+        "commissions": 37016.56533635391,
+        "spread_costs": 89961.0870136094,
+        "slippage_costs": 44980.5435068047,
+        "impact_costs": 44582.351336635635,
+        "interest": 28273.601780932964,
+        "borrow_fees": 0.0,
+        "total_trading_costs": 216540.54719340365,
+        "net_financing": 28273.601780932964,
+        "max_stale_marks": 2,
+        "n_round_trips": 19251,
+        "hit_rate": 0.5713469430159472,
+        "avg_win": 729.90103959411,
+        "avg_loss": -759.3146664360052,
+        "win_loss_ratio": 0.961262928082301,
+        "profit_factor": 1.2812567796870127,
+        "avg_holding_days": 79.80665939431718
+      },
+      "benchmark_metrics": {
+        "n_periods": 4182,
+        "start": "2005-12-22",
+        "end": "2021-12-31",
+        "total_return": 0.3105575651456711,
+        "cagr": 0.0164305249582386,
+        "mean_daily_arith": 0.00010469674984764352,
+        "mean_ann_arith": 0.026383580961606166,
+        "ann_vol": 0.1420601630862807,
+        "sharpe": 0.04966156451736257,
+        "sharpe_per_period": 0.00312838451026978,
+        "sortino": 0.07067275039914675,
+        "max_drawdown": 0.4763589076621747,
+        "calmar": 0.03449190241634117,
+        "longest_dd_sessions": 1844,
+        "longest_dd_days": 2580,
+        "skew": 0.04591830835384504,
+        "kurtosis_excess": 1.8085217417571737,
+        "kurtosis_pearson": 4.808521741757174,
+        "best_day": 0.04988240936864341,
+        "worst_day": -0.04406444525925968,
+        "time_invested": 1.0,
+        "avg_gross_exposure": 0.8747816023768827,
+        "avg_net_exposure": 0.8747816023768827,
+        "turnover_annual": 2.3588661883991846,
+        "commissions": 247406.72999072625,
+        "spread_costs": 40502.056289190645,
+        "slippage_costs": 20251.028144595322,
+        "impact_costs": 2199.8484285750797,
+        "interest": 52640.69868958899,
+        "borrow_fees": 0.0,
+        "total_trading_costs": 310359.6628530873,
+        "net_financing": 52640.69868958899,
+        "max_stale_marks": 13,
+        "n_round_trips": 236358,
+        "hit_rate": 0.49040015569602047,
+        "avg_win": 26.43625985567204,
+        "avg_loss": -22.673421394407633,
+        "win_loss_ratio": 1.165958123205548,
+        "profit_factor": 1.1220294738040903,
+        "avg_holding_days": 137.71987832017533
+      },
+      "warnings": [],
+      "sharpe_uncertainty": {
+        "sharpe_annualised": 0.32309589225690216,
+        "n_obs": 4182,
+        "se_iid_normal_annualised": 0.24550097886967298,
+        "se_iid_nonnormal_annualised": 0.24549044120414265,
+        "se_block_bootstrap_annualised": 0.2619261856762161,
+        "bootstrap_ci_low": -0.17978893118196318,
+        "bootstrap_ci_high": 0.8586163127125236,
+        "bootstrap_block": 20
+      },
+      "order_status_counts": {
+        "submitted": 21388,
+        "filled": 19373,
+        "replaced": 1210,
+        "resized": 804,
+        "expired": 1
+      },
+      "runtime_seconds": 187.41,
+      "scored_range": "2005-12-22 to 2021-12-31",
+      "data_mode": "synthetic",
+      "sample": "development sample before hold-out; fixed a-priori parameters (not OOS)",
+      "step_runtime_seconds": 191.73
+    },
+    "total_runtime_seconds": 247.28,
+    "holdout_consumed_by_this_run": false
+  }
+}

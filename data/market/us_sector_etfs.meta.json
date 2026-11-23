@@ -1,0 +1,34 @@
+{
+  "data_mode": "market",
+  "provider": "Yahoo Finance via yfinance",
+  "yfinance_version": "1.8.0",
+  "symbols": [
+    "SPY",
+    "XLB",
+    "XLE",
+    "XLF",
+    "XLI",
+    "XLK",
+    "XLP",
+    "XLU",
+    "XLV",
+    "XLY"
+  ],
+  "requested_period": [
+    "2005-01-01",
+    "2025-01-01"
+  ],
+  "retrieved_utc": "2026-11-22T17:27:26+00:00",
+  "currency": "USD",
+  "adjustment_convention": "auto_adjust=True (split+dividend adjusted OHLC); research approximation, not raw tradable prices",
+  "missing_data_policy": "no forward fill; incomplete rows dropped (missing bars)",
+  "ohlc_repair_tolerance": 0.005,
+  "cleaning_report": {
+    "repaired_rows": 90,
+    "dropped_rows": 0,
+    "missing_rows": 0
+  },
+  "universe_note": "current ETF tickers chosen today: NOT a point-in-time universe; survivorship/selection bias is not addressed",
+  "usage_note": "for personal research; check provider terms before redistribution",
+  "n_rows": 50330
+}

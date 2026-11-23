@@ -1,0 +1,9 @@
+,value
+sharpe_annualised,0.16272021791185037
+n_obs,4434.0
+se_iid_normal_annualised,0.2384041623801956
+se_iid_nonnormal_annualised,0.238428804880756
+se_block_bootstrap_annualised,0.23136574556517062
+bootstrap_ci_low,-0.3056370732071012
+bootstrap_ci_high,0.6297228745026663
+bootstrap_block,20.0

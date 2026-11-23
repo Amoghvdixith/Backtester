@@ -1,0 +1,37 @@
+# 12-1 cross-sectional momentum (offline, SYNTHETIC data with listings, delistings, halts).
+experiment: momentum_12_1
+seed: 11
+
+data:
+  mode: synthetic
+  path: data/synthetic/stock_universe.csv
+  membership: data/synthetic/stock_universe_membership.csv   # point-in-time intervals
+
+strategy:
+  name: momentum_12_1
+  params: {lookback: 252, skip: 21, quantile: 0.1, mode: long_only, min_names: 1,
+           min_universe: 10, max_stale: 5, min_obs_frac: 0.9}
+
+sizing: {type: equal_weight, target_gross: 1.0}
+constraints: {max_gross: 1.0, max_net: 1.0, max_position: 0.25, allow_short: false}
+
+costs:
+  commission: {rate_bps: 1.0, minimum: 1.0}
+  spread: {spread_bps: 8.0}
+  slippage: {bps: 2.0}
+  impact: {coefficient: 0.5, fallback_bps: 10.0}
+
+execution: {expires_after: 5, insufficient_cash: resize, adv_window: 20, vol_window: 20}
+financing: {credit_rate: 0.02, debit_rate: 0.04, borrow_fee: 0.005, day_count_basis: 365}
+
+backtest:
+  initial_cash: 1000000
+  fractional: false
+  rebalance_band: 0.0
+  cash_buffer: 0.01
+  universe_exit: liquidate
+
+# Benchmark: equal weight of eligible point-in-time members (same 253-observation history
+# filter as the strategy), rebalanced monthly through the same engine and cost model.
+benchmark: {name: equal_weight_universe, params: {min_history: 253, rebalance: monthly}}
+risk_free_annual: 0.02

@@ -1,0 +1,18 @@
+{
+  "data/synthetic/etf_like.csv": {
+    "holdout_start": "2022-01-01",
+    "locked_at_utc": "2026-11-22T17:25:51+00:00"
+  },
+  "data/synthetic/stock_universe.csv": {
+    "holdout_start": "2022-01-01",
+    "locked_at_utc": "2026-11-22T17:25:56+00:00"
+  },
+  "data/market/us_sector_etfs.csv": {
+    "holdout_start": "2022-01-01",
+    "locked_at_utc": "2026-11-22T17:28:48+00:00"
+  },
+  "data/synthetic/stock_universe_large.csv": {
+    "holdout_start": "2022-01-01",
+    "locked_at_utc": "2026-11-22T17:34:28+00:00"
+  }
+}

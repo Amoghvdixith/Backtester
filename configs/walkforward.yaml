@@ -1,0 +1,32 @@
+# Walk-forward settings and the PROTECTED FINAL HOLD-OUT.
+#
+# The hold-out start was fixed here before any experiment was run.  The first
+# research run writes results/logs/holdout_lock.json; later runs with a different
+# date for the same dataset are refused.  Searches only ever receive data before
+# this date.  Evaluating the hold-out requires:  python scripts/run_holdout.py --confirm
+holdout_start: "2022-01-01"     # final 3 years (2022-2024) of the synthetic samples
+
+train_years: 3
+test_years: 1
+step_years: 1
+objective: sharpe               # training-window Sharpe (rf = 0), deterministic tie-break
+min_train_obs: 126
+
+grids:
+  sma_crossover:
+    fast: [10, 20, 50, 100]
+    slow: [50, 100, 150, 200]   # (50,50) and (100,50),(100,100) are invalid and are logged
+  momentum_12_1:
+    lookback: [126, 252]
+    skip: [0, 21]
+    quantile: [0.1, 0.2]
+
+research_mode:                  # larger, slower search (python scripts/run_all.py --research)
+  grids:
+    sma_crossover:
+      fast: [5, 10, 20, 30, 50, 75, 100]
+      slow: [50, 75, 100, 150, 200, 250]
+    momentum_12_1:
+      lookback: [126, 189, 252]
+      skip: [0, 10, 21]
+      quantile: [0.1, 0.2, 0.3]
